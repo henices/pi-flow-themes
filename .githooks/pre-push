@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Runs the full pipeline before every push. Enable once with:
+#   git config core.hooksPath .githooks
+exec "$(git rev-parse --show-toplevel)/ci/check.sh"

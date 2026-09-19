@@ -1,0 +1,534 @@
+{
+  "$comment": "Locked upstream sources for every theme in build_themes.py::THEMES. refs are full commit hashes of the upstream default branch as verified on 2026-09-19 (git ls-remote); updating a ref is a deliberate, audited change. build_themes.py --check fails if a theme has no entry here.",
+  "verified": "2026-09-19",
+  "themes": [
+    {
+      "name": "flow-one-dark-pro",
+      "roleAuthority": "first-party-vscode",
+      "sources": [
+        {
+          "upstream": "https://github.com/Binaryify/OneDark-Pro",
+          "ref": "54c3280b29f2c2ed9751e5ca4e071380b7b42205",
+          "files": [
+            "themes/OneDark-Pro.json"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/Binaryify/OneDark-Pro/blob/54c3280b29f2c2ed9751e5ca4e071380b7b42205/LICENSE.txt"
+        },
+        {
+          "upstream": "https://github.com/joshdick/onedark.vim",
+          "ref": "47bec7a6196a843dad195d2666c3ac84c6e80c78",
+          "files": [
+            "colors/onedark.vim"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/joshdick/onedark.vim/blob/47bec7a6196a843dad195d2666c3ac84c6e80c78/LICENSE"
+        }
+      ],
+      "notes": "dim = editor.wordHighlightBorder (a UI colour); syntaxOperator = cyan covers only logical/arithmetic operators upstream, generic keyword.operator is fg"
+    },
+    {
+      "name": "flow-nord",
+      "roleAuthority": "first-party-vim",
+      "sources": [
+        {
+          "upstream": "https://github.com/nordtheme/vim",
+          "ref": "f13f5dfbb784deddbc1d8195f34dfd9ec73e2295",
+          "files": [
+            "colors/nord.vim"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/nordtheme/vim/blob/f13f5dfbb784deddbc1d8195f34dfd9ec73e2295/LICENSE"
+        },
+        {
+          "upstream": "https://github.com/nordtheme/nord",
+          "ref": "1cef71605416a222e57225b544540ce0fcec18d4",
+          "files": [
+            "docs (nordtheme.com/docs/colors-and-palettes)"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/nordtheme/nord/blob/1cef71605416a222e57225b544540ce0fcec18d4/LICENSE"
+        }
+      ],
+      "notes": "nord3_bright #616E88 = nord.vim s:nord3_gui_bright; text/muted = nord6/nord4 (pi needs three text tiers)"
+    },
+    {
+      "name": "flow-dracula",
+      "roleAuthority": "first-party-spec",
+      "sources": [
+        {
+          "upstream": "https://github.com/dracula/dracula-theme",
+          "ref": "5962daae54e4608d281cb6f4eee2349e605d9e3c",
+          "files": [
+            "spec (spec.draculatheme.com)"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/dracula/dracula-theme/blob/5962daae54e4608d281cb6f4eee2349e605d9e3c/LICENSE"
+        },
+        {
+          "upstream": "https://github.com/dracula/vim",
+          "ref": "e7817b4baccfb3529f709ac048c621f35cdbc5b3",
+          "files": [
+            "colors/dracula_base.vim",
+            "autoload/dracula.vim"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/dracula/vim/blob/e7817b4baccfb3529f709ac048c621f35cdbc5b3/LICENSE"
+        }
+      ],
+      "notes": "single official grey (comment): muted = dim"
+    },
+    {
+      "name": "flow-gruvbox",
+      "roleAuthority": "first-party-vim",
+      "sources": [
+        {
+          "upstream": "https://github.com/morhetz/gruvbox",
+          "ref": "ef8864bb42bf244f0295d1c5a403b27e3d139695",
+          "files": [
+            "colors/gruvbox.vim"
+          ],
+          "license": "UNLICENSED (no LICENSE file in repo)",
+          "licenseUrl": null
+        }
+      ],
+      "notes": "kept by user decision 2026-09-19: no LICENSE file upstream; only the colour values are reproduced here, see README"
+    },
+    {
+      "name": "flow-catppuccin-mocha",
+      "roleAuthority": "first-party-spec",
+      "sources": [
+        {
+          "upstream": "https://github.com/catppuccin/palette",
+          "ref": "07d02aa110ef9eb7e7427afca5c73ba9cf7f8ebd",
+          "files": [
+            "palette.json"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/catppuccin/palette/blob/07d02aa110ef9eb7e7427afca5c73ba9cf7f8ebd/LICENSE"
+        },
+        {
+          "upstream": "https://github.com/catppuccin/catppuccin",
+          "ref": "d09787dd98ca6fba08af5ef2ae94a7e09f17daca",
+          "files": [
+            "docs/style-guide.md"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/catppuccin/catppuccin/blob/d09787dd98ca6fba08af5ef2ae94a7e09f17daca/LICENSE"
+        },
+        {
+          "upstream": "https://github.com/catppuccin/nvim",
+          "ref": "edefef779ab08ce1a4a404713e3012b0d202bd35",
+          "files": [
+            "lua/catppuccin/groups/syntax.lua",
+            "lua/catppuccin/groups/editor.lua"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/catppuccin/nvim/blob/edefef779ab08ce1a4a404713e3012b0d202bd35/LICENSE.md"
+        }
+      ],
+      "notes": "mdHeading = lavender and mdListBullet = mauve are choices, not official roles (upstream blue / teal)"
+    },
+    {
+      "name": "flow-tokyo-night",
+      "roleAuthority": "first-party-vim",
+      "sources": [
+        {
+          "upstream": "https://github.com/folke/tokyonight.nvim",
+          "ref": "cdc07ac78467a233fd62c493de29a17e0cf2b2b6",
+          "files": [
+            "lua/tokyonight/colors/storm.lua",
+            "lua/tokyonight/colors/night.lua",
+            "lua/tokyonight/colors/init.lua",
+            "lua/tokyonight/groups/base.lua",
+            "lua/tokyonight/groups/treesitter.lua"
+          ],
+          "license": "Apache-2.0",
+          "licenseUrl": "https://github.com/folke/tokyonight.nvim/blob/cdc07ac78467a233fd62c493de29a17e0cf2b2b6/LICENSE"
+        }
+      ],
+      "notes": "toolDiffRemoved = red (upstream diff fg git.delete #914c54 is too dark on the shared boxes)"
+    },
+    {
+      "name": "flow-solarized-dark",
+      "roleAuthority": "first-party-vim",
+      "sources": [
+        {
+          "upstream": "https://github.com/altercation/vim-colors-solarized",
+          "ref": "528a59f26d12278698bb946f8fb82a63711eec21",
+          "files": [
+            "colors/solarized.vim"
+          ],
+          "license": "MIT",
+          "licenseUrl": null,
+          "notes": "MIT text embedded in the vim file header; no LICENSE file"
+        }
+      ],
+      "notes": "green = #859900 (spec value; the vim file's active 'experimental' green is #719e07); toolTitle #B3BAB3 is the approved custom foreground"
+    },
+    {
+      "name": "flow-monokai",
+      "roleAuthority": "first-party-vscode",
+      "sources": [
+        {
+          "upstream": "https://github.com/microsoft/vscode",
+          "ref": "fb20064c0f4bda98ede67f594727503329370d1f",
+          "files": [
+            "extensions/theme-monokai/themes/monokai-color-theme.json"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/microsoft/vscode/blob/fb20064c0f4bda98ede67f594727503329370d1f/LICENSE.txt"
+        }
+      ]
+    },
+    {
+      "name": "flow-kanagawa",
+      "roleAuthority": "first-party-vim",
+      "sources": [
+        {
+          "upstream": "https://github.com/rebelot/kanagawa.nvim",
+          "ref": "bb85e4bfc8d89b0e62c8fa53ccdd13d12e2f77b3",
+          "files": [
+            "lua/kanagawa/colors.lua",
+            "lua/kanagawa/themes.lua",
+            "lua/kanagawa/highlights/syntax.lua",
+            "lua/kanagawa/highlights/treesitter.lua",
+            "lua/kanagawa/highlights/editor.lua"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/rebelot/kanagawa.nvim/blob/bb85e4bfc8d89b0e62c8fa53ccdd13d12e2f77b3/LICENSE"
+        }
+      ],
+      "notes": "border = springViolet1 (ui.special); upstream separators are backgrounds"
+    },
+    {
+      "name": "flow-rose-pine",
+      "roleAuthority": "first-party-vim",
+      "sources": [
+        {
+          "upstream": "https://github.com/rose-pine/neovim",
+          "ref": "ff483051a47e27d84bdef47703538df1ed9f4a47",
+          "files": [
+            "lua/rose-pine.lua",
+            "lua/rose-pine/palette.lua",
+            "lua/rose-pine/config.lua"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/rose-pine/neovim/blob/ff483051a47e27d84bdef47703538df1ed9f4a47/LICENSE"
+        }
+      ]
+    },
+    {
+      "name": "flow-ayu-mirage",
+      "roleAuthority": "first-party-spec",
+      "sources": [
+        {
+          "upstream": "https://github.com/ayu-theme/ayu-colors",
+          "ref": "e3f44fdf2a1c83e3f183d4e8acd40c6a452dcb1c",
+          "files": [
+            "themes/mirage.yaml",
+            "src/ (official generator resolves $palette refs)"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/ayu-theme/ayu-colors/blob/e3f44fdf2a1c83e3f183d4e8acd40c6a452dcb1c/license"
+        }
+      ],
+      "notes": "follows repo HEAD; the published npm ayu 8.0.1 still carries older values (func FFD173, keyword FFAD66)"
+    },
+    {
+      "name": "flow-catppuccin-frappe",
+      "roleAuthority": "first-party-spec",
+      "sources": [
+        {
+          "upstream": "https://github.com/catppuccin/palette",
+          "ref": "07d02aa110ef9eb7e7427afca5c73ba9cf7f8ebd",
+          "files": [
+            "palette.json"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/catppuccin/palette/blob/07d02aa110ef9eb7e7427afca5c73ba9cf7f8ebd/LICENSE"
+        },
+        {
+          "upstream": "https://github.com/catppuccin/catppuccin",
+          "ref": "d09787dd98ca6fba08af5ef2ae94a7e09f17daca",
+          "files": [
+            "docs/style-guide.md"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/catppuccin/catppuccin/blob/d09787dd98ca6fba08af5ef2ae94a7e09f17daca/LICENSE"
+        },
+        {
+          "upstream": "https://github.com/catppuccin/nvim",
+          "ref": "edefef779ab08ce1a4a404713e3012b0d202bd35",
+          "files": [
+            "lua/catppuccin/groups/syntax.lua",
+            "lua/catppuccin/groups/editor.lua"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/catppuccin/nvim/blob/edefef779ab08ce1a4a404713e3012b0d202bd35/LICENSE.md"
+        }
+      ],
+      "notes": "same mapping as mocha; mdLinkUrl = overlay1 (overlay0 is 2.87:1 on this canvas)"
+    },
+    {
+      "name": "flow-catppuccin-macchiato",
+      "roleAuthority": "first-party-spec",
+      "sources": [
+        {
+          "upstream": "https://github.com/catppuccin/palette",
+          "ref": "07d02aa110ef9eb7e7427afca5c73ba9cf7f8ebd",
+          "files": [
+            "palette.json"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/catppuccin/palette/blob/07d02aa110ef9eb7e7427afca5c73ba9cf7f8ebd/LICENSE"
+        },
+        {
+          "upstream": "https://github.com/catppuccin/catppuccin",
+          "ref": "d09787dd98ca6fba08af5ef2ae94a7e09f17daca",
+          "files": [
+            "docs/style-guide.md"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/catppuccin/catppuccin/blob/d09787dd98ca6fba08af5ef2ae94a7e09f17daca/LICENSE"
+        },
+        {
+          "upstream": "https://github.com/catppuccin/nvim",
+          "ref": "edefef779ab08ce1a4a404713e3012b0d202bd35",
+          "files": [
+            "lua/catppuccin/groups/syntax.lua",
+            "lua/catppuccin/groups/editor.lua"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/catppuccin/nvim/blob/edefef779ab08ce1a4a404713e3012b0d202bd35/LICENSE.md"
+        }
+      ],
+      "notes": "same mapping as mocha; mdLinkUrl = overlay1 like frappe"
+    },
+    {
+      "name": "flow-everforest",
+      "roleAuthority": "first-party-vim",
+      "sources": [
+        {
+          "upstream": "https://github.com/sainnhe/everforest",
+          "ref": "85a86eb62409e3ec88713bff3d1b9d7374e112e4",
+          "files": [
+            "autoload/everforest.vim",
+            "colors/everforest.vim"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/sainnhe/everforest/blob/85a86eb62409e3ec88713bff3d1b9d7374e112e4/LICENSE"
+        }
+      ],
+      "notes": "dark medium; mdHeading = Title (orange), upstream H1..H6 are a rainbow"
+    },
+    {
+      "name": "flow-github-dark",
+      "roleAuthority": "first-party-vscode",
+      "sources": [
+        {
+          "upstream": "https://github.com/primer/github-vscode-theme",
+          "ref": "cd78e5e4e7bcf132a6f428ae0f32264bb1b729cf",
+          "files": [
+            "src/classic/theme.js",
+            "src/classic/primer.js",
+            "src/classic/colors.json"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/primer/github-vscode-theme/blob/cd78e5e4e7bcf132a6f428ae0f32264bb1b729cf/LICENSE"
+        }
+      ],
+      "notes": "classic dark; dark scale = reversed light scale"
+    },
+    {
+      "name": "flow-melange",
+      "roleAuthority": "first-party-vim",
+      "sources": [
+        {
+          "upstream": "https://github.com/savq/melange-nvim",
+          "ref": "ce42f6b629beeaa00591ba73a77d3eeac4cf28ce",
+          "files": [
+            "lua/melange/palettes/dark.lua",
+            "colors/melange.lua"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/savq/melange-nvim/blob/ce42f6b629beeaa00591ba73a77d3eeac4cf28ce/LICENSE"
+        }
+      ],
+      "notes": "diff foregrounds from the b/c scales (upstream diff is background-based)"
+    },
+    {
+      "name": "flow-miramare",
+      "roleAuthority": "first-party-vim",
+      "sources": [
+        {
+          "upstream": "https://github.com/franbach/miramare",
+          "ref": "04330816640c3162275d69e7094126727948cd0d",
+          "files": [
+            "colors/miramare.vim"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/franbach/miramare/blob/04330816640c3162275d69e7094126727948cd0d/LICENSE"
+        }
+      ],
+      "notes": "muted/border/quote = orange: upstream Grey #444444 is unreadable and there is no muted tier"
+    },
+    {
+      "name": "flow-moonlight",
+      "roleAuthority": "first-party-vscode",
+      "sources": [
+        {
+          "upstream": "https://github.com/atomiks/moonlight-vscode-theme",
+          "ref": "05c2cdb1fbd65b6e58ab0e8abdea0db7619f2acf",
+          "files": [
+            "src/colors.ts",
+            "src/moonlight.json",
+            "src/ui.json"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/atomiks/moonlight-vscode-theme/blob/05c2cdb1fbd65b6e58ab0e8abdea0db7619f2acf/LICENSE"
+        }
+      ]
+    },
+    {
+      "name": "flow-noctis-bordo",
+      "roleAuthority": "first-party-vscode",
+      "sources": [
+        {
+          "upstream": "https://github.com/liviuschera/noctis",
+          "ref": "4a82370b2c064e36726c23e94f27ed3782bd6ecd",
+          "files": [
+            "themes/bordo.json"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/liviuschera/noctis/blob/4a82370b2c064e36726c23e94f27ed3782bd6ecd/LICENSE.md"
+        }
+      ],
+      "notes": "toolOutput/diffContext = TEXT (comment 2.3:1 in boxes); toolDiffRemoved = TAG (markup.deleted.diff)"
+    },
+    {
+      "name": "flow-noctis-sereno",
+      "roleAuthority": "first-party-vscode",
+      "sources": [
+        {
+          "upstream": "https://github.com/liviuschera/noctis",
+          "ref": "4a82370b2c064e36726c23e94f27ed3782bd6ecd",
+          "files": [
+            "themes/sereno.json"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/liviuschera/noctis/blob/4a82370b2c064e36726c23e94f27ed3782bd6ecd/LICENSE.md"
+        }
+      ],
+      "notes": "as bordo"
+    },
+    {
+      "name": "flow-oceanic-next",
+      "roleAuthority": "first-party-tmtheme",
+      "sources": [
+        {
+          "upstream": "https://github.com/voronianski/oceanic-next-color-scheme",
+          "ref": "44a1eca851f86d4cc82f5c41734c917c65fa5710",
+          "files": [
+            "Oceanic Next.tmTheme",
+            "README.md (base16 table: base04 #A7ADBA)"
+          ],
+          "license": "MIT (asserted in README only, no LICENSE file)",
+          "licenseUrl": "https://github.com/voronianski/oceanic-next-color-scheme/blob/44a1eca851f86d4cc82f5c41734c917c65fa5710/README.md"
+        }
+      ],
+      "notes": "muted = base04 from the official extended palette"
+    },
+    {
+      "name": "flow-synthwave84",
+      "roleAuthority": "first-party-vscode",
+      "sources": [
+        {
+          "upstream": "https://github.com/robb0wen/synthwave-vscode",
+          "ref": "ecfa2fe1279f7233663fa3f98a96e6756000567b",
+          "files": [
+            "themes/synthwave-color-theme.json"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/robb0wen/synthwave-vscode/blob/ecfa2fe1279f7233663fa3f98a96e6756000567b/LICENSE"
+        }
+      ],
+      "notes": "text = colors.foreground #FFFFFF (no editor.foreground upstream); warning = yellow (upstream editorWarning is the success green); mdLink/mdLinkUrl swapped vs upstream (green/yellow) so the URL is the quieter colour"
+    },
+    {
+      "name": "flow-andromeda",
+      "roleAuthority": "first-party-vscode",
+      "sources": [
+        {
+          "upstream": "https://github.com/EliverLara/Andromeda",
+          "ref": "d1abb48c69493000aa0133a32d594eb25e523d4f",
+          "files": [
+            "themes/Andromeda-color-theme.json"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/EliverLara/Andromeda/blob/d1abb48c69493000aa0133a32d594eb25e523d4f/LICENSE.md"
+        }
+      ],
+      "notes": "comment #A0A1A7 drops the upstream cc alpha; customMessageLabel = blue (pink 2.84:1 on the panel); mdListBullet = cyan (upstream markup.list yellow)"
+    },
+    {
+      "name": "flow-material",
+      "roleAuthority": "base16-spec",
+      "sources": [
+        {
+          "upstream": "https://github.com/tinted-theming/schemes",
+          "ref": "7cda828e3ed8bca190857bdcfe6bac84db690780",
+          "files": [
+            "base16/material.yaml"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/tinted-theming/schemes/blob/7cda828e3ed8bca190857bdcfe6bac84db690780/LICENSE"
+        },
+        {
+          "upstream": "https://github.com/tinted-theming/home",
+          "ref": "38fdf7d4c74417ea86f1e354c628fc2d2aeb5d96",
+          "files": [
+            "styling.md"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/tinted-theming/home/blob/38fdf7d4c74417ea86f1e354c628fc2d2aeb5d96/LICENSE"
+        }
+      ],
+      "notes": "roles per the Base16 styling spec table; border/toolTitle = base04"
+    },
+    {
+      "name": "flow-snazzy",
+      "roleAuthority": "base16-spec",
+      "sources": [
+        {
+          "upstream": "https://github.com/tinted-theming/schemes",
+          "ref": "7cda828e3ed8bca190857bdcfe6bac84db690780",
+          "files": [
+            "base16/snazzy.yaml"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/tinted-theming/schemes/blob/7cda828e3ed8bca190857bdcfe6bac84db690780/LICENSE"
+        },
+        {
+          "upstream": "https://github.com/tinted-theming/home",
+          "ref": "38fdf7d4c74417ea86f1e354c628fc2d2aeb5d96",
+          "files": [
+            "styling.md"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/tinted-theming/home/blob/38fdf7d4c74417ea86f1e354c628fc2d2aeb5d96/LICENSE"
+        },
+        {
+          "upstream": "https://github.com/sindresorhus/hyper-snazzy",
+          "ref": "aed8086ec8629b7da9063ba96221015c6e4aaa80",
+          "files": [
+            "index.js"
+          ],
+          "license": "MIT",
+          "licenseUrl": "https://github.com/sindresorhus/hyper-snazzy/blob/aed8086ec8629b7da9063ba96221015c6e4aaa80/license"
+        }
+      ],
+      "notes": "roles per the Base16 styling spec table; toolTitle = base0D"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+# 构建中间产物
+handwritten.html
+ui-layer.html
+
+# Python
+__pycache__/
+*.py[cod]
+
+# 编辑器 / 系统
+.DS_Store
+*.swp
+.vscode/
+.idea/
+
+# ci/check.sh 第 4 步的 pi 加载器（缓存）
+node_modules/
+package.json
+package-lock.json
+
+# 工作计划与工作笔记，仅本地
+docs/plans/
