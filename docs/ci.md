@@ -17,12 +17,12 @@
 这是沙箱里没有 pi 二进制时的做法；`validateThemeJson` 就是 pi 启动时接进加载器的那个校验器：
 
 ```bash
-npm install --omit=dev --ignore-scripts @earendil-works/pi-coding-agent@0.85.1
+npm install --ignore-scripts --no-save @earendil-works/pi-coding-agent@0.99.1
 node --input-type=module -e '
 const P="./node_modules/@earendil-works/pi-coding-agent/dist/modes/interactive/theme/";
 const {loadThemeFromPath,setThemeJsonValidator}=await import(P+"theme.js");
 const {validateThemeJson}=await import(P+"theme-json.js");
 setThemeJsonValidator(validateThemeJson);
-for (const f of (await import("node:fs")).readdirSync("themes")) loadThemeFromPath("themes/"+f,"dark");
+for (const f of (await import("node:fs")).readdirSync("themes")) loadThemeFromPath("themes/"+f,"truecolor");
 console.log("ok")'
 ```

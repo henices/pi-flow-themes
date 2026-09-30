@@ -1,6 +1,7 @@
 {
 	"$schema": "https://raw.githubusercontent.com/earendil-works/pi/main/packages/coding-agent/src/modes/interactive/theme/theme-schema.json",
 	"name": "flow-noctis-sereno",
+	"appearance": "dark",
 	"vars": {
 		"text": "#B2CACD",
 		"comment": "#5B858B",

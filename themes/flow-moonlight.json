@@ -1,6 +1,7 @@
 {
 	"$schema": "https://raw.githubusercontent.com/earendil-works/pi/main/packages/coding-agent/src/modes/interactive/theme/theme-schema.json",
 	"name": "flow-moonlight",
+	"appearance": "dark",
 	"vars": {
 		"text": "#C8D3F5",
 		"gray9": "#B4C2F0",

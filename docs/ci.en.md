@@ -19,16 +19,16 @@ loaded through pi's own validator + loader (`PI_VERSION=…` to pin another vers
 
 ## Cross-check with pi's own loader
 This is what to do when the pi binary isn't available in the sandbox;
-`validateThemeJson` is the same validator pi wires into its loader at startup:
-`validateThemeJson` is the same validator pi wires into its loader at startup):
+`validateThemeJson` is the same validator pi wires into its loader at startup (the loader's second
+argument is a `TerminalColorMode`, so `"truecolor"`, not an appearance):
 
 ```bash
-npm install --omit=dev --ignore-scripts @earendil-works/pi-coding-agent@0.85.1
+npm install --ignore-scripts --no-save @earendil-works/pi-coding-agent@0.99.1
 node --input-type=module -e '
 const P="./node_modules/@earendil-works/pi-coding-agent/dist/modes/interactive/theme/";
 const {loadThemeFromPath,setThemeJsonValidator}=await import(P+"theme.js");
 const {validateThemeJson}=await import(P+"theme-json.js");
 setThemeJsonValidator(validateThemeJson);
-for (const f of (await import("node:fs")).readdirSync("themes")) loadThemeFromPath("themes/"+f,"dark");
+for (const f of (await import("node:fs")).readdirSync("themes")) loadThemeFromPath("themes/"+f,"truecolor");
 console.log("ok")'
 ```

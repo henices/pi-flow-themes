@@ -9,14 +9,15 @@
 #                         + sources/theme-sources.json completeness
 #   4. pi loader          every theme loaded through pi's real validator + loader
 #
-# Requirements: python3 (stdlib only); node >= 22.19 + npm for step 4 (network on first run,
-# node_modules/ is cached and gitignored). PI_VERSION pins the loader (default 0.85.1).
+# Requirements: python3 (stdlib only); node >= 22.19 + npm for step 4 (network needed when the
+# cached node_modules/ is missing or holds a different version than PI_VERSION; node_modules/ is
+# gitignored). PI_VERSION pins the loader (default 0.99.1).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 PY=${PYTHON:-python3}
 NODE=${NODE:-node}
 NPM=${NPM:-npm}
-PI_VERSION=${PI_VERSION:-0.85.1}
+PI_VERSION=${PI_VERSION:-0.99.1}
 
 echo "== 1/4 determinism: two consecutive builds must be byte-identical"
 sig() { find themes -name 'flow-*.json' -print0 | sort -z | xargs -0 sha1sum | sha1sum; }
@@ -45,8 +46,11 @@ echo "== 3/4 build_themes.py --check (floors / allowlist / sources / duplicates)
 "$PY" build_themes.py --check
 
 echo "== 4/4 load all themes through pi ${PI_VERSION}'s own validator + loader"
-if [ ! -d node_modules/@earendil-works/pi-coding-agent ]; then
-  "$NPM" install --omit=dev --ignore-scripts --no-fund --no-audit \
+PI_DIR=node_modules/@earendil-works/pi-coding-agent
+if [ ! -f "$PI_DIR/package.json" ] || [ "$("$NODE" -p "require('./$PI_DIR/package.json').version" 2>/dev/null)" != "$PI_VERSION" ]; then
+  # --no-save: never touch package.json / package-lock.json from CI. No --omit=dev: the pin
+  # lives in devDependencies, and npm 11 then drops even this explicit install from the tree.
+  "$NPM" install --ignore-scripts --no-fund --no-audit --no-save \
     "@earendil-works/pi-coding-agent@$PI_VERSION" >/dev/null
 fi
 "$NODE" ci/pi-validate.mjs

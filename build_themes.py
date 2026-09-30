@@ -572,7 +572,9 @@ def build(name: str, spec: dict) -> dict:
         if not (v in vars_ or HEX.match(v)):
             raise ValueError(f"{name}: {tok} = {v!r} is neither a palette name nor #RRGGBB")
         colors[tok] = v
-    return {"$schema": SCHEMA, "name": name, "vars": vars_, "colors": colors,
+    # "appearance": declared instead of leaving pi to detect it — every theme here targets a
+    # dark canvas (pi 0.99+ schema field; detection would also say "dark", this pins it).
+    return {"$schema": SCHEMA, "name": name, "appearance": "dark", "vars": vars_, "colors": colors,
             "export": {"pageBg": spec["bg"], "cardBg": UI["userMessageBg"], "infoBg": spec["info"]}}
 
 

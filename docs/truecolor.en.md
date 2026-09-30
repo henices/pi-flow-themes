@@ -7,11 +7,16 @@ The tool status boxes in these themes are dark, low-saturation colors; once quan
 colors they visibly distort: the done box turns teal (`#005F5F`) and the error box gray (`#5F5F5F`).
 pi's built-in dark theme suffers the same way. There are two gates in the chain:
 
-1. **pi itself.** pi emits 24-bit color when `COLORTERM` is `truecolor` or `24bit`. When the variable
-   is empty, versions 0.37 and later still assume truecolor (except `screen*`, `linux`, `dumb`, and
+1. **pi itself.** pi emits 24-bit color when `COLORTERM` is `truecolor` or `24bit`; since 0.99,
+   a `TERM` ending in `-direct` (e.g. `xterm-direct`) also qualifies. When the variable is empty,
+   versions 0.37 and later still assume truecolor (except `screen*`, `linux`, `dumb`, and
    Terminal.app), while older versions fall back to 256 colors. Docker does not pass the host's
    `COLORTERM` into the container, so explicitly running `export COLORTERM=truecolor` in the shell
-   that launches pi is the safest option.
+   that launches pi is the safest option. If pi's capability detection itself is wrong, force it:
+   `"terminal": {"trueColor": true}` in settings.json, or `PI_TRUE_COLOR=1`. Note that these
+   overrides only reach custom themes from 0.99.0 on (earlier versions ignore them and keep
+   rendering custom themes with 256 colors); the 25 themes in this repo need pi ≥ 0.99.0 for the
+   forced setting to help.
 2. **tmux / screen in the middle.** If tmux doesn't know the outer terminal supports RGB, it
    downscales the 24-bit color pi emits to 256 colors on its own — same symptoms as above. Add two
    lines to `.tmux.conf` and restart the tmux server:

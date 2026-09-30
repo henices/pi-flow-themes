@@ -1,6 +1,7 @@
 {
 	"$schema": "https://raw.githubusercontent.com/earendil-works/pi/main/packages/coding-agent/src/modes/interactive/theme/theme-schema.json",
 	"name": "flow-catppuccin-mocha",
+	"appearance": "dark",
 	"vars": {
 		"overlay0": "#6C7086",
 		"overlay1": "#7F849C",

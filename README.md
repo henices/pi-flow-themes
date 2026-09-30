@@ -2,7 +2,7 @@
 
 为 [pi coding agent](https://github.com/earendil-works/pi) 移植的 25 套知名配色。
 色值全部取自各主题的官方调色板（来源与上游 commit 锁定在 `sources/theme-sources.json`），每个 token 的角色
-按原作者的高亮规范逐一手工映射，主题 JSON 由 `build_themes.py` 从这份映射表生成，25 套都经 pi 0.85.1
+按原作者的高亮规范逐一手工映射，主题 JSON 由 `build_themes.py` 从这份映射表生成，25 套都经 pi 0.99.1
 （`@earendil-works/pi-coding-agent`）自带的 schema 校验器与加载器实际加载通过。
 
 ![handwritten](preview/handwritten.png)
@@ -38,12 +38,25 @@
 ## 安装
 
 ```bash
+# 方式一：复制进用户主题目录
 mkdir -p ~/.pi/agent/themes && cp themes/flow-*.json ~/.pi/agent/themes/
 pi --use-theme flow-dracula      # 本次运行使用；交互内 /settings 可选择并保存
 pi --use-theme light/flow-nord   # 跟随终端明暗：浅色终端用内置 light，深色用 flow-nord
+
+# 方式二：作为 pi package 安装（本仓库布局即包，themes/ 会被自动发现）
+pi install git:github.com/<user>/pi-flow-themes     # git 源；本地克隆则 pi install ./pi-flow-themes
+pi -e ./pi-flow-themes --use-theme flow-dracula     # 只试一次，不写入设置
 ```
 
-编辑 JSON 后 pi 会热重载。
+也可以不复制、不装包，在 settings.json 里直接指向本仓库的主题目录：
+
+```json
+{ "themes": ["/path/to/pi-flow-themes/themes"] }
+```
+
+pi 0.99 起默认主题为 `system`（从终端自身的调色板取色），选中 flow 主题后保存在 `theme` 设置。
+热重载只覆盖 `~/.pi/agent/themes/<name>.json` 里的活动主题；从包或 `themes` 设置加载的主题，
+改动后需 `/reload` 生效。
 
 工具状态盒等 UI 面是真彩色的低饱和深色，需要终端链路（pi → tmux → 终端）全程 24 位色：
 若状态盒发青 / 发灰，按 [docs/truecolor.md](docs/truecolor.md) 排障
