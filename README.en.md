@@ -66,6 +66,30 @@ color end to end across the chain (pi → tmux → terminal): if the status boxe
 follow [docs/truecolor.en.md](docs/truecolor.en.md)
 (中文：[truecolor.md](docs/truecolor.md)).
 
+## Trade-offs against the built-in system theme
+
+Since pi 0.99 the default theme `system` queries the terminal for its foreground / background and ANSI
+palette at startup: hue comes from the terminal, lightness is solved from contrast rules
+(text ≥ 4.5:1, UI ≥ 3:1), and the theme is rebuilt whenever the terminal switches light/dark
+(see the upstream announcement, [There are many themes, but this one is yours](https://earendil.com/posts/system-theme/)).
+It guarantees readability on any terminal, at the cost of no longer looking like any known palette —
+Gruvbox's dark red is lightened, Catppuccin Latte's red darkened.
+
+flow applies the same floors (text 4.5:1, everything else 3:1) with the opposite means: **keep the
+official colors and record every sub-floor exception** (the `--check` whitelist). Reasons to pick flow:
+
+- **Palette identity**: Gruvbox looks like official Gruvbox on any terminal; each of the 25 sets keeps
+  its own identity instead of drifting with the terminal's palette.
+- **An auditable quality ledger**: contrast, each theme's brightest supported canvas, and every
+  deviation from upstream are on record and reproducible via `--check` / `--measure`
+  (see [docs/design.en.md](docs/design.en.md)).
+- **Full highlight specs**: system only has the hues of the terminal's 16 ANSI colors, while flow maps
+  each upstream highlight spec role by role onto all 37 foreground tokens (syntax / markdown / diff).
+
+Conversely, if you switch terminal themes often or flip light/dark, `system` is the lower-friction
+choice: flow themes are static JSON and can only follow the terminal's appearance through a pair like
+`light/flow-nord`, not re-derive colors from the terminal palette the way system does.
+
 ## Design principle: the background carries state, the foreground carries identity
 
 pi has no global background token: the canvas is the terminal's own background color, and a theme

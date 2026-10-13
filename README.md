@@ -62,6 +62,27 @@ pi 0.99 起默认主题为 `system`（从终端自身的调色板取色），选
 若状态盒发青 / 发灰，按 [docs/truecolor.md](docs/truecolor.md) 排障
 （English: [truecolor.en.md](docs/truecolor.en.md)）。
 
+## 与内置 system 主题的取舍
+
+pi 0.99 起的默认主题 `system` 在启动时向终端查询前景 / 背景与 ANSI 调色板：色相取自终端，
+亮度按对比度规则反解（正文 ≥ 4.5:1、UI ≥ 3:1），并跟随终端明暗切换实时重建
+（见上游公告 [There are many themes, but this one is yours](https://earendil.com/posts/system-theme/)）。
+它保证在任何终端上可读，代价是不再像任何一套已知配色——Gruvbox 的暗红被抬亮、
+Catppuccin Latte 的红被压暗。
+
+flow 用同样的底线（正文 4.5:1、其余 3:1），但达标手段相反：**保留官方色，把过不了线的例外
+逐条记录、有意不修**（`--check` 白名单）。选 flow 的理由：
+
+- **配色身份**：Gruvbox 在任何终端里都是官方 Gruvbox 的样子，25 套各有辨识度，不随终端调色板漂移；
+- **可复核的质量账目**：对比度、每套可用的最亮底色、与上游的每一处偏离都记录在案，
+  `--check` / `--measure` 可复算（见 [docs/design.md](docs/design.md)）；
+- **完整的高亮规范**：system 只有终端 16 色 ANSI 的色相可用，flow 把各上游的高亮规范
+  逐角色映射到全部 37 个前景 token（语法 / markdown / diff）。
+
+反之，若你在意的是换终端主题后无需重选、或经常明暗切换，`system` 更省心：flow 是静态 JSON，
+跟随终端明暗只能靠 `light/flow-nord` 这类配对语法在两套固定主题间切换，不能像 system 那样
+从终端调色板现算颜色。
+
 ## 设计原则：背景承载状态，前景承载个性
 
 pi 没有全局背景 token，画布就是终端自己的背景色，主题只能决定画在其上的东西。本集把 56 个 token 分成两层：
