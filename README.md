@@ -2,7 +2,7 @@
 
 为 [pi coding agent](https://github.com/earendil-works/pi) 移植的 25 套知名配色。
 色值全部取自各主题的官方调色板（来源与上游 commit 锁定在 `sources/theme-sources.json`），每个 token 的角色
-按原作者的高亮规范逐一手工映射，主题 JSON 由 `build_themes.py` 从这份映射表生成，25 套都经 pi 0.99.1
+按原作者的高亮规范逐一手工映射，主题 JSON 由 `build_themes.py` 从这份映射表生成，25 套都经 pi 1.2.0
 （`@earendil-works/pi-coding-agent`）自带的 schema 校验器与加载器实际加载通过。
 
 ![handwritten](preview/handwritten.png)

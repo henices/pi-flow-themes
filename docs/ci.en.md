@@ -23,11 +23,13 @@ This is what to do when the pi binary isn't available in the sandbox;
 argument is a `TerminalColorMode`, so `"truecolor"`, not an appearance):
 
 ```bash
-npm install --ignore-scripts --no-save @earendil-works/pi-coding-agent@0.99.1
+npm install --ignore-scripts --no-save @earendil-works/pi-coding-agent@1.2.0
 node --input-type=module -e '
 const P="./node_modules/@earendil-works/pi-coding-agent/dist/modes/interactive/theme/";
 const {loadThemeFromPath,setThemeJsonValidator}=await import(P+"theme.js");
-const {validateThemeJson}=await import(P+"theme-json.js");
+// pi 1.2.0 renamed theme-json.js to theme-schema.js (same validateThemeJson signature)
+const V=(await import("node:fs")).existsSync(P+"theme-schema.js")?"theme-schema.js":"theme-json.js";
+const {validateThemeJson}=await import(P+V);
 setThemeJsonValidator(validateThemeJson);
 for (const f of (await import("node:fs")).readdirSync("themes")) loadThemeFromPath("themes/"+f,"truecolor");
 console.log("ok")'

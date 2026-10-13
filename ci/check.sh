@@ -11,13 +11,13 @@
 #
 # Requirements: python3 (stdlib only); node >= 22.19 + npm for step 4 (network needed when the
 # cached node_modules/ is missing or holds a different version than PI_VERSION; node_modules/ is
-# gitignored). PI_VERSION pins the loader (default 0.99.1).
+# gitignored). PI_VERSION pins the loader (default 1.2.0).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 PY=${PYTHON:-python3}
 NODE=${NODE:-node}
 NPM=${NPM:-npm}
-PI_VERSION=${PI_VERSION:-0.99.1}
+PI_VERSION=${PI_VERSION:-1.2.0}
 
 echo "== 1/4 determinism: two consecutive builds must be byte-identical"
 sig() { find themes -name 'flow-*.json' -print0 | sort -z | xargs -0 sha1sum | sha1sum; }
