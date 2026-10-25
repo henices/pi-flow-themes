@@ -113,6 +113,11 @@ THEMES = {
     # nordtheme.com/docs/colors-and-palettes + nordtheme/vim. Official Snow Storm "dark to bright"
     # (semi-light) style: nord4 body (nordtheme/vim Normal fg), nord6 stays elevated (own messages,
     # search hits, code blocks), nord9 secondary (thinking/quotes), nord3 brightened for dim/comments.
+    # Tool output is the palette mix #ACC0D5 (60% nord9 + 40% nord6, sRGB): the official steps
+    # around it jump 3.7:1 (nord9 — too close to the box and in its own blue-grey hue) -> 7.4:1
+    # (nord4 — the body colour), and the one unused step in between, nord5 (8.2:1), is dE 2.4 from
+    # nord6, i.e. reads as the same bright white. Same precedent as the Solarized tool title.
+    # Measured 5.32:1 on the boxes, 6.69:1 on the canvas, dE 13.9 to nord9 / 13.5 to nord4.
     "flow-nord": dict(
         bg="#2E3440",
         palette={"nord3": "#4C566A", "nord3_bright": "#616E88", "nord4": "#D8DEE9", "nord6": "#ECEFF4",
@@ -120,7 +125,7 @@ THEMES = {
                  "nord11": "#BF616A", "nord13": "#EBCB8B", "nord14": "#A3BE8C", "nord15": "#B48EAD"},
         roles={"text": "nord4", "muted": "nord9", "dim": "nord3_bright", "accent": "nord8", "border": "nord10",
                "success": "nord14", "error": "nord11", "warning": "nord13", "toolTitle": "nord4",
-               "toolOutput": "nord9",
+               "toolOutput": "#ACC0D5",
                "userMessageText": "nord6", "customMessageText": "nord6", "searchMatchText": "nord6",
                "mdCodeBlock": "nord6", "toolDiffContext": "nord4",
                "customMessageLabel": "nord15",

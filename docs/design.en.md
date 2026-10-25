@@ -87,9 +87,11 @@ comments — while body text is unaffected.
 The remaining 37 tokens (body / secondary / status line, syntax, markdown, status colors, accent,
 borders) in principle use only hex values from the official palettes, with roles mapped per the
 original authors' highlight definitions; the sources are documented in the comment block above each
-theme in `build_themes.py`. The single custom foreground is Solarized's tool title `#B3BAB3`: the
-official base1 reaches only 3.72:1 on the shared success box while the next step up, base2, jumps to
-8.11:1; the in-between color lands at 5.01:1.
+theme in `build_themes.py`. There are two custom foregrounds, both in-between colors for a gap
+between adjacent official steps: Solarized's tool title `#B3BAB3` (official base1 reaches only
+3.72:1 on the shared success box while the next step up, base2, jumps to 8.11:1; the mix lands at
+5.01:1) and Nord's tool output `#ACC0D5` (nord9 is 3.69:1, too close to the box; nord4/nord5/nord6
+are the 7.4-8.6:1 body whites, with nord5 only dE 2.4 from nord6; 60% nord9 + 40% nord6 gives 5.32:1).
 
 Known costs of sticking to official colors (`--check` lists these; left unfixed on purpose):
 
@@ -117,8 +119,11 @@ from upstream; re-verified hex-by-hex against upstream on 2026-09-19):
 
 - **Readability-driven**: Nord body text uses nord4 (the official Snow Storm "dark to bright" style,
   nordtheme/vim's Normal fg), with nord6 kept for elevated text (own messages, search hits, code
-  blocks) and nord9 for secondary text (thinking/quotes, same tone as toolOutput; diff context
-  lines stay nord4 gray); Solarized body text uses base1 (base0 is too dark in
+  blocks) and nord9 for secondary text (thinking/quotes), with tool output on the in-between mix
+  `#ACC0D5` (60% nord9 + 40% nord6: nord9 reaches only 3.7:1 on the shared tool boxes and shares the
+  pending box's blue-grey hue; the next official steps, nord4/nord5/nord6, are the 7.4-8.6:1 body
+  whites, and nord5 sits dE 2.4 from nord6; the mix measures 5.3:1;
+  diff context lines stay nord4 gray); Solarized body text uses base1 (base0 is too dark in
   terminals) and the tool title uses the in-between color described above; Kanagawa diff deletion
   uses waveRed (autumnRed is only 2.1:1 inside the box) and borders use ui.special's springViolet1
   (upstream's divider is a background color); One Dark's on-panel text uses its bright foreground

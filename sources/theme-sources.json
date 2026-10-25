@@ -50,7 +50,7 @@
           "licenseUrl": "https://github.com/nordtheme/nord/blob/1cef71605416a222e57225b544540ce0fcec18d4/LICENSE"
         }
       ],
-      "notes": "nord3_bright #616E88 = nord.vim s:nord3_gui_bright; text/muted = nord6/nord4 (pi needs three text tiers)"
+      "notes": "nord3_bright #616E88 = nord.vim s:nord3_gui_bright; text/muted/dim = nord4/nord9/nord3_bright (pi needs three text tiers); toolOutput = mix #ACC0D5 (60% nord9 + 40% nord6): official nord9 is 3.7:1 on the boxes, nord4/nord5/nord6 are the 7.4-8.6:1 body whites"
     },
     {
       "name": "flow-dracula",

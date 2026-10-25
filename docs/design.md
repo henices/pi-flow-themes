@@ -68,8 +68,10 @@ thinking 等级的边框颜色只表示等级，五档五色、低刺激、不�
 ## 前景层：以官方色为主
 
 其余 37 个 token（正文 / 次要 / 状态行、语法、markdown、状态色、accent、边框）原则上只取官方调色板的色值，
-角色按原作者的高亮定义映射，来源见 `build_themes.py` 每套主题头部的注释。唯一的自定义前景是 Solarized
-工具标题 `#B3BAB3`：其官方 base1 在共享成功盒上只有 3.72:1，而下一档 base2 跳到 8.11:1；中间色取 5.01:1。
+角色按原作者的高亮定义映射，来源见 `build_themes.py` 每套主题头部的注释。自定义前景只有两处，都是"相邻官方档位
+跨度太大"的中间色：Solarized 工具标题 `#B3BAB3`（官方 base1 在共享成功盒上只有 3.72:1，下一档 base2
+跳到 8.11:1，中间色取 5.01:1）、Nord 工具输出 `#ACC0D5`（nord9 3.69:1 太贴盒底，nord4/nord5/nord6
+是 7.4–8.6:1 的正文白；取 60% nord9 + 40% nord6，5.32:1）。
 
 坚持官方色的已知代价（`--check` 会列出，有意不修）：
 
@@ -90,7 +92,10 @@ thinking 等级的边框颜色只表示等级，五档五色、低刺激、不�
 
 - **可读性驱动**：Nord 正文用 nord4（官方 Snow Storm "dark to bright" 半亮式，即 nordtheme/vim 的
   Normal 前景），用户消息/搜索命中/代码块保持 nord6 抢眼档，次要文字（thinking/引用）用 nord9
-  （官方"次级 UI 元素"色，与 toolOutput 同调），diff 上下文行保持 nord4 灰；Solarized 正文用
+  （官方"次级 UI 元素"色），工具输出用两档之间的混色 `#ACC0D5`（60% nord9 + 40% nord6；nord9 在
+  共享工具盒上只有 3.7:1，又与 pending 盒同属蓝灰相，读起来像盒底的一部分；官方下一档 nord4/nord5/nord6
+  是 7.4–8.6:1 的正文白，nord5 与 nord6 只差 dE 2.4；混色取 5.3:1），
+  diff 上下文行保持 nord4 灰；Solarized 正文用
   base1（base0 在终端里太暗），工具标题使用上述中间色；Kanagawa diff 删除用 waveRed（autumnRed 在盒内只有
   2.1:1），边框用 ui.special 的 springViolet1（上游分隔线是背景色）；One Dark 面板内文字用其亮前景 `#D7DAE0`；
   Miramare 的次要文字、引用与边框用 orange（官方 Grey `#444444` 在终端画布上不可读，上游也没有次要文字层）；

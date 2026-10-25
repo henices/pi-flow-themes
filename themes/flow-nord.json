@@ -61,7 +61,7 @@
 		"toolSuccessBg": "ui_toolSuccessBg",
 		"toolErrorBg": "ui_toolErrorBg",
 		"toolTitle": "nord4",
-		"toolOutput": "nord9",
+		"toolOutput": "#ACC0D5",
 		"mdHeading": "nord8",
 		"mdLink": "nord8",
 		"mdLinkUrl": "nord3_bright",
