@@ -115,8 +115,10 @@ Known costs of sticking to official colors (`--check` lists these; left unfixed 
 Intentional role or value deviations (all still official colors of the theme — only the roles differ
 from upstream; re-verified hex-by-hex against upstream on 2026-09-19):
 
-- **Readability-driven**: Nord body text uses nord6 and secondary text nord4 (pi needs three text
-  levels and Nord has no middle gray); Solarized body text uses base1 (base0 is too dark in
+- **Readability-driven**: Nord body text uses nord4 (the official Snow Storm "dark to bright" style,
+  nordtheme/vim's Normal fg), with nord6 kept for elevated text (own messages, search hits, code
+  blocks) and nord9 for secondary text (thinking/quotes, same tone as toolOutput; diff context
+  lines stay nord4 gray); Solarized body text uses base1 (base0 is too dark in
   terminals) and the tool title uses the in-between color described above; Kanagawa diff deletion
   uses waveRed (autumnRed is only 2.1:1 inside the box) and borders use ui.special's springViolet1
   (upstream's divider is a background color); One Dark's on-panel text uses its bright foreground

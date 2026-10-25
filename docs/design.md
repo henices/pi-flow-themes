@@ -88,7 +88,9 @@ thinking 等级的边框颜色只表示等级，五档五色、低刺激、不�
 
 有意的角色或色值偏离（都仍是该主题的官方色，只是角色与上游不同；2026-09-19 逐 hex 对照上游复核）：
 
-- **可读性驱动**：Nord 正文用 nord6、次要用 nord4（pi 需要三级文字层次，Nord 没有中间灰）；Solarized 正文用
+- **可读性驱动**：Nord 正文用 nord4（官方 Snow Storm "dark to bright" 半亮式，即 nordtheme/vim 的
+  Normal 前景），用户消息/搜索命中/代码块保持 nord6 抢眼档，次要文字（thinking/引用）用 nord9
+  （官方"次级 UI 元素"色，与 toolOutput 同调），diff 上下文行保持 nord4 灰；Solarized 正文用
   base1（base0 在终端里太暗），工具标题使用上述中间色；Kanagawa diff 删除用 waveRed（autumnRed 在盒内只有
   2.1:1），边框用 ui.special 的 springViolet1（上游分隔线是背景色）；One Dark 面板内文字用其亮前景 `#D7DAE0`；
   Miramare 的次要文字、引用与边框用 orange（官方 Grey `#444444` 在终端画布上不可读，上游也没有次要文字层）；

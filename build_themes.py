@@ -110,16 +110,19 @@ THEMES = {
                "syntaxOperator": "cyan", "syntaxPunctuation": "fg"},
         info="#3A3A2E"),
 
-    # nordtheme.com/docs/colors-and-palettes + nordtheme/vim. text=nord6 (elevated) / muted=nord4 (base):
-    # pi needs a 3-step hierarchy and Nord has no gray between nord3 and nord4.
+    # nordtheme.com/docs/colors-and-palettes + nordtheme/vim. Official Snow Storm "dark to bright"
+    # (semi-light) style: nord4 body (nordtheme/vim Normal fg), nord6 stays elevated (own messages,
+    # search hits, code blocks), nord9 secondary (thinking/quotes), nord3 brightened for dim/comments.
     "flow-nord": dict(
         bg="#2E3440",
         palette={"nord3": "#4C566A", "nord3_bright": "#616E88", "nord4": "#D8DEE9", "nord6": "#ECEFF4",
                  "nord7": "#8FBCBB", "nord8": "#88C0D0", "nord9": "#81A1C1", "nord10": "#5E81AC",
                  "nord11": "#BF616A", "nord13": "#EBCB8B", "nord14": "#A3BE8C", "nord15": "#B48EAD"},
-        roles={"text": "nord6", "muted": "nord4", "dim": "nord3_bright", "accent": "nord8", "border": "nord10",
+        roles={"text": "nord4", "muted": "nord9", "dim": "nord3_bright", "accent": "nord8", "border": "nord10",
                "success": "nord14", "error": "nord11", "warning": "nord13", "toolTitle": "nord4",
                "toolOutput": "nord9",
+               "userMessageText": "nord6", "customMessageText": "nord6", "searchMatchText": "nord6",
+               "mdCodeBlock": "nord6", "toolDiffContext": "nord4",
                "customMessageLabel": "nord15",
                "mdHeading": "nord8", "mdCode": "nord7", "mdQuoteBorder": "nord10",
                "syntaxComment": "nord3_bright", "syntaxKeyword": "nord9", "syntaxFunction": "nord8",
