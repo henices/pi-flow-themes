@@ -1,22 +1,25 @@
 #!/usr/bin/env python3
 """pi-flow-themes: pi themes from official palettes (hand-mapped roles, script-assembled JSON).
 
-Principle: 背景承载状态, 前景承载个性.
-  * UI (background/structural) layer  = one shared set (UI below): user/tool panels,
-    green/red state boxes, selection, search, lines, scrollbar, and the thinking-level ramp
-    (input-box border) — identical on every theme.
-    Neutral gray pinned at CIE L* >= 27.5 so it reads on any dark terminal background
-    (pi has no background token: the canvas is whatever the terminal paints).
-  * Identity (foreground) layer       = the palette's official colors only, mapped to pi
-    tokens by the theme author's own role definitions (cited per theme).
+Principle: 背景承载状态与主题色相, 前景承载个性.
+  * UI baseline                     = one shared set (UI below): lightness and pairwise distances
+    for user/tool panels, selection, search, lines, scrollbar, and the thinking-level ramp.
+  * Theme backgrounds               = the eight actual background tokens share one 30% CIE Lab
+    a*/b* shift toward each theme's official canvas. Dark-canvas themes lower the whole background
+    group by at most 4 L*, preserving relative levels and state-box dE; Solarized and Nord have
+    explicit lower-L* surfaces, respectively restoring official foregrounds and reducing panel glare.
+    Structural lines, scrollbar thumb, and the thinking ramp remain identical on every theme.
+    Pi has no canvas token: the terminal still paints the global background.
+  * Identity (foreground) layer     = official palette colors first, mapped to pi tokens by the
+    theme authors' role definitions (cited per theme); a few documented mixes cover readability gaps.
 
 Usage:
   python3 build_themes.py            # write themes/flow-*.json
   python3 build_themes.py --check    # + contrast report (FLOOR + KNOWN allowlist), canvas ceiling per
-                                     #   terminal background, sources/theme-sources.json completeness,
-                                     #   near-duplicate report; exit 1 on any unexpected finding
+                                     #   terminal background, background L*/state dE baselines, sources
+                                     #   completeness, near-duplicates; exit 1 on any unexpected finding
   python3 build_themes.py --preview  # + preview/handwritten.png (all themes) and
-                                     #   preview/ui-layer.png (shared UI layer on each terminal bg)
+                                     #   preview/ui-layer.png (each theme's UI on its official canvas)
   python3 build_themes.py --measure  # metrics cited in README and docs/design.md: UI layer L*, state-box dE,
                                      #   panel dL* per terminal bg, full per-theme contrast table
   python3 build_themes.py --measure '#2E4931' '#414141' ...   # L* of each hex + pairwise contrast / dE
@@ -39,7 +42,7 @@ SCHEMA = ("https://raw.githubusercontent.com/earendil-works/pi/main/packages/cod
 #   GNOME dark & VS Code Dark+ 11 · Konsole Breeze 15 · Ghostty & One Half Dark 18 ·
 #   WezTerm & GNOME Tango dark 21 · the 25 palettes' own canvases 8.5–22.0 (Catppuccin Frappé).
 # Panels sit at L* 27.5: dL* >= 5.5 on the brightest canvas in range (22), 27.5 on pure black.
-TERMINALS = [  # (label, default background) — rows of preview/ui-layer.png
+TERMINALS = [  # (label, default background) — canvas support checks and --measure rows
     ("kitty / Windows Terminal Vintage", "#000000"),
     ("Windows Terminal Campbell", "#0C0C0C"),
     ("Alacritty / VS Code Dark Modern terminal", "#181818"),
@@ -66,6 +69,11 @@ UI = {
     "thinkingLow": "#5EA190", "thinkingMedium": "#6E96AA", "thinkingHigh": "#8985B7",
     "thinkingXhigh": "#AB85B7", "thinkingMax": "#B66D9D",
 }
+BG_TOKENS = tuple(k for k in UI if k.endswith("Bg") or k == "scrollbarTrack")
+STATE_BG_TOKENS = ("userMessageBg", "toolPendingBg", "toolSuccessBg", "toolErrorBg")
+UI_TINT = 0.30                    # one Lab a*/b* shift per theme, applied to all eight backgrounds
+PANEL_CANVAS_DL = 8               # start softening when the default panel is > 8 L* above its canvas
+MAX_PANEL_DARKEN = 4              # small bounded adjustment; do not chase equal contrast across themes
 
 # foreground tokens that default to another *token* ("@name") unless the theme says otherwise
 # (palette names may coincide with token names, e.g. rose-pine "muted"/"text": "@" disambiguates)
@@ -118,6 +126,7 @@ THEMES = {
     # (nord4 — the body colour), and the one unused step in between, nord5 (8.2:1), is dE 2.4 from
     # nord6, i.e. reads as the same bright white. Same precedent as the Solarized tool title.
     # Measured 5.32:1 on the boxes, 6.69:1 on the canvas, dE 13.9 to nord9 / 13.5 to nord4.
+    # Lower every background by another 3 L* to reduce panel glare; foreground mappings stay unchanged.
     "flow-nord": dict(
         bg="#2E3440",
         palette={"nord3": "#4C566A", "nord3_bright": "#616E88", "nord4": "#D8DEE9", "nord6": "#ECEFF4",
@@ -133,6 +142,8 @@ THEMES = {
                "syntaxComment": "nord3_bright", "syntaxKeyword": "nord9", "syntaxFunction": "nord8",
                "syntaxVariable": "nord4", "syntaxString": "nord14", "syntaxNumber": "nord15", "syntaxType": "nord7",
                "syntaxOperator": "nord9", "syntaxPunctuation": "nord4"},
+        ui_l={"userMessageBg": 24.5, "customMessageBg": 24.5, "selectedBg": 27.0, "searchMatchBg": 30.0,
+              "toolPendingBg": 24.2, "toolSuccessBg": 25.3, "toolErrorBg": 25.3, "scrollbarTrack": 24.5},
         info="#45443A"),
 
     # spec.draculatheme.com (syntax + markup §2.2) + dracula/vim. Dracula has one gray: comment.
@@ -200,9 +211,10 @@ THEMES = {
                "syntaxPunctuation": "fg_dark"},
         info="#33342A"),
 
-    # altercation/vim-colors-solarized. text=base1 (emphasized content) for TUI legibility;
-    # toolTitle is the sole custom foreground: the palette jumps from base1 (3.72:1 on the shared
-    # success box) to base2 (8.11:1), so use their 35% sRGB mix for a balanced 5.01:1.
+    # altercation/vim-colors-solarized. Lower-L* panels restore every foreground to official values:
+    # base1 body/panel/title text, base0 tool output/context, violet labels, and red diff deletions.
+    # The default shared-L* panels cannot do this (base1 needs <= 22.5 on selection, violet needs
+    # <= 20 on user panels, and red needs <= 18 on all tool boxes). dim/comments/URLs keep base01.
     "flow-solarized-dark": dict(
         bg="#002B36",
         palette={"base01": "#586E75", "base0": "#839496", "base1": "#93A1A1", "base2": "#EEE8D5",
@@ -210,11 +222,13 @@ THEMES = {
                  "violet": "#6C71C4", "blue": "#268BD2", "cyan": "#2AA198", "green": "#859900"},
         roles={"text": "base1", "muted": "base0", "dim": "base01", "accent": "blue", "border": "blue",
                "borderAccent": "cyan", "success": "green", "error": "red", "warning": "yellow",
-               "searchMatchText": "base2", "customMessageLabel": "violet", "toolTitle": "#B3BAB3",
+               "searchMatchText": "base2", "customMessageLabel": "violet",
                "mdHeading": "orange", "mdLink": "violet", "mdCode": "cyan", "mdListBullet": "blue",
                "syntaxComment": "base01", "syntaxKeyword": "green", "syntaxFunction": "blue",
                "syntaxVariable": "blue", "syntaxString": "cyan", "syntaxNumber": "cyan", "syntaxType": "yellow",
                "syntaxOperator": "green", "syntaxPunctuation": "base0"},
+        ui_l={"userMessageBg": 19.5, "customMessageBg": 19.5, "selectedBg": 22.5, "searchMatchBg": 25.5,
+              "toolPendingBg": 18.0, "toolSuccessBg": 18.0, "toolErrorBg": 18.0, "scrollbarTrack": 19.5},
         info="#2B3A2A"),
 
     # microsoft/vscode extensions/theme-monokai tokenColors (original Monokai values). toolTitle =
@@ -563,8 +577,13 @@ def build(name: str, spec: dict) -> dict:
     for k, v in spec["palette"].items():
         if not HEX.match(v):
             raise ValueError(f"{name}: palette {k}={v!r} is not #RRGGBB")
+    overrides = spec.get("ui_l", {})
+    bad = set(overrides) - set(BG_TOKENS)
+    if bad:
+        raise ValueError(f"{name}: unknown ui_l background tokens {sorted(bad)}")
     roles = {**DEFAULTS, **spec["roles"]}
-    vars_ = {**spec["palette"], **{f"ui_{k}": v for k, v in UI.items()}}
+    ui = themed_ui(spec["bg"], background_lightness(spec))
+    vars_ = {**spec["palette"], **{f"ui_{k}": v for k, v in ui.items()}}
     colors = {}
     for tok in TOKENS:
         if tok in UI:
@@ -584,7 +603,7 @@ def build(name: str, spec: dict) -> dict:
     # "appearance": declared instead of leaving pi to detect it — every theme here targets a
     # dark canvas (pi 0.99+ schema field; detection would also say "dark", this pins it).
     return {"$schema": SCHEMA, "name": name, "appearance": "dark", "vars": vars_, "colors": colors,
-            "export": {"pageBg": spec["bg"], "cardBg": UI["userMessageBg"], "infoBg": spec["info"]}}
+            "export": {"pageBg": spec["bg"], "cardBg": ui["userMessageBg"], "infoBg": spec["info"]}}
 
 
 def resolve(theme: dict, tok: str) -> str:
@@ -622,6 +641,42 @@ def lab(h):
     return 116 * f(y) - 16, 500 * (f(x / .95047) - f(y)), 200 * (f(y) - f(z / 1.08883))
 
 
+def from_lab(L, a, b):
+    """CIE L*a*b* -> #RRGGBB, clipping only if a shifted colour leaves the sRGB gamut."""
+    fy = (L + 16) / 116
+    fx, fz = fy + a / 500, fy - b / 200
+    inv = lambda t: t ** 3 if t ** 3 > 0.008856 else (t - 16 / 116) / 7.787
+    x, y, z = .95047 * inv(fx), inv(fy), 1.08883 * inv(fz)
+    rgb = (x * 3.2406 - y * 1.5372 - z * .4986,
+           -x * .9689 + y * 1.8758 + z * .0415,
+           x * .0557 - y * .2040 + z * 1.0570)
+    def encode(c):
+        c = max(0, min(1, c))
+        c = 12.92 * c if c <= 0.0031308 else 1.055 * c ** (1 / 2.4) - 0.055
+        return round(c * 255)
+    return "#" + "".join(f"{encode(c):02X}" for c in rgb)
+
+
+def background_lightness(spec):
+    """Shared L* targets, gently lowered on dark canvases, then explicit per-theme overrides."""
+    baseline = lstar(UI["userMessageBg"])
+    delta = max(-MAX_PANEL_DARKEN, min(0, lstar(spec["bg"]) + PANEL_CANVAS_DL - baseline))
+    targets = {tok: lstar(UI[tok]) + delta for tok in BG_TOKENS}
+    targets.update(spec.get("ui_l", {}))
+    return targets
+
+
+def themed_ui(canvas, lightness):
+    """Apply one Lab hue vector and the computed per-theme background lightness targets."""
+    _, a, b = lab(canvas)
+    da, db = a * UI_TINT, b * UI_TINT
+    ui = dict(UI)
+    for tok in BG_TOKENS:
+        L, base_a, base_b = lab(UI[tok])
+        ui[tok] = from_lab(lightness.get(tok, L), base_a + da, base_b + db)
+    return ui
+
+
 def dE(a, b):
     """CIE76 colour difference (~2 just noticeable, 10+ clearly distinct, 20+ obviously different)."""
     return sum((x - y) ** 2 for x, y in zip(lab(a), lab(b))) ** 0.5
@@ -641,15 +696,16 @@ def check(theme: dict) -> list:
     it actually renders on (canvas / user+custom panel / the three tool boxes / selection / search)."""
     g = lambda k: resolve(theme, k)
     bg = theme["export"]["pageBg"]
-    boxes = [UI["toolPendingBg"], UI["toolSuccessBg"], UI["toolErrorBg"]]
+    boxes = [g("toolPendingBg"), g("toolSuccessBg"), g("toolErrorBg")]
     rows = [(tok, "canvas", contrast(g(tok), bg)) for tok in CANVAS_TOKENS]
-    rows += [(tok, "panel", contrast(g(tok), UI["userMessageBg"]))
-             for tok in ("userMessageText", "customMessageText", "customMessageLabel")]
+    rows.append(("userMessageText", "panel", contrast(g("userMessageText"), g("userMessageBg"))))
+    rows += [(tok, "panel", contrast(g(tok), g("customMessageBg")))
+             for tok in ("customMessageText", "customMessageLabel")]
     rows += [(tok, "boxes", min(contrast(g(tok), b) for b in boxes))
              for tok in ("toolTitle", "toolOutput", "toolDiffAdded", "toolDiffRemoved", "toolDiffContext")]
     rows += [(tok, "canvas", contrast(UI[tok], bg)) for tok in RAMP]   # shared ramp on this canvas
-    rows.append(("text", "selected", contrast(g("text"), UI["selectedBg"])))
-    rows.append(("searchMatchText", "search", contrast(g("searchMatchText"), UI["searchMatchBg"])))
+    rows.append(("text", "selected", contrast(g("text"), g("selectedBg"))))
+    rows.append(("searchMatchText", "search", contrast(g("searchMatchText"), g("searchMatchBg"))))
     return rows
 
 
@@ -706,19 +762,19 @@ def preview(themes: dict):
     print("preview/handwritten.png")
 
 
-def preview_ui():
-    """Shared UI layer on every measured terminal background -> preview/ui-layer.png
-    (two-column contact sheet, one card per terminal)."""
+def preview_ui(themes: dict):
+    """Each theme's UI backgrounds on its official canvas -> preview/ui-layer.png."""
     fg, dim = "#D4D4D4", "#9A9A9A"
-    chip = lambda k, t: f"<span class=chip style='background:{UI[k]};color:{fg}'>{t}</span>"
     cards = []
-    for label, bg in TERMINALS:
+    for name, theme in themes.items():
+        g = lambda k: resolve(theme, k)
+        chip = lambda k, t: f"<span class=chip style='background:{g(k)};color:{fg}'>{t}</span>"
         levels = "".join(f"<span class=inp style='border-color:{UI[k]};color:{dim}'>{k.removeprefix('thinking').lower()}</span>"
                          for k in ("thinkingOff", "thinkingMinimal", *RAMP))
-        cards.append(f"""<div class=card style="background:{bg}">
-<div class=lbl style="color:{fg}">{label} <span style="color:{dim}">{bg} · L* {lstar(bg):.0f}</span></div>
+        cards.append(f"""<div class=card style="background:{theme['export']['pageBg']}">
+<div class=lbl style="color:{fg}">{name} <span style="color:{dim}">{g('userMessageBg')} · L* {lstar(g('userMessageBg')):.1f}</span></div>
 <div class=line>{chip('userMessageBg', '▸ user message')}{chip('toolPendingBg', 'pending')}{chip('toolSuccessBg', 'done')}{chip('toolErrorBg', 'error')}</div>
-<div class=line>{chip('selectedBg', 'selected')}{chip('searchMatchBg', 'search')}<span class=code style="border:1px solid {UI['mdCodeBlockBorder']};color:{dim}">code block</span><span class=hr style="background:{UI['mdHr']}"></span><span class=bar style="background:{UI['scrollbarTrack']}"><span style="background:{UI['scrollbarThumb']}"></span></span></div>
+<div class=line>{chip('selectedBg', 'selected')}{chip('searchMatchBg', 'search')}<span class=code style="border:1px solid {UI['mdCodeBlockBorder']};color:{dim}">code block</span><span class=hr style="background:{UI['mdHr']}"></span><span class=bar style="background:{g('scrollbarTrack')}"><span style="background:{UI['scrollbarThumb']}"></span></span></div>
 <div class=line>{levels}</div></div>""")
     html = ("<!doctype html><meta charset=utf-8><style>body{background:#16161c;margin:14px;font:13px/1.5 ui-monospace,"
             "Menlo,monospace}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:1360px}"
@@ -746,23 +802,18 @@ FLOOR = {"text": 4.5, "userMessageText": 4.5, "customMessageText": 4.5, "toolTit
 # (theme, token, background). Anything below FLOOR and NOT listed here fails --check.
 KNOWN: dict[tuple, str] = {
     ("flow-one-dark-pro", "syntaxComment", "canvas"): "onedark.vim comment is dark by design",
-    ("flow-one-dark-pro", "text", "selected"): "bright fg on the shared selection gray",
+    ("flow-one-dark-pro", "text", "selected"): "bright fg on the theme-tinted selection background",
     ("flow-nord", "dim", "canvas"): "official nord3 brightened",
     ("flow-nord", "mdLinkUrl", "canvas"): "nord3 brightened",
     ("flow-nord", "syntaxComment", "canvas"): "nord3 brightened",
     ("flow-nord", "toolDiffRemoved", "boxes"): "nord11 on the state boxes",
-    ("flow-dracula", "toolTitle", "boxes"): "official pink, 4.16:1; bold command text stays clear",
+    ("flow-dracula", "toolTitle", "boxes"): "official pink, 4.14:1; bold command text stays clear",
     ("flow-gruvbox", "toolDiffRemoved", "boxes"): "official red on the state boxes",
     ("flow-tokyo-night", "mdLinkUrl", "canvas"): "official comment blue-grey",
     ("flow-tokyo-night", "syntaxComment", "canvas"): "official comment",
     ("flow-solarized-dark", "dim", "canvas"): "base01 by design",
     ("flow-solarized-dark", "mdLinkUrl", "canvas"): "base01",
     ("flow-solarized-dark", "syntaxComment", "canvas"): "base01",
-    ("flow-solarized-dark", "customMessageLabel", "panel"): "violet label, author colour",
-    ("flow-solarized-dark", "toolDiffRemoved", "boxes"): "official red on the state boxes",
-    ("flow-solarized-dark", "userMessageText", "panel"): "base1 on the shared user panel",
-    ("flow-solarized-dark", "customMessageText", "panel"): "base1 on the shared user panel",
-    ("flow-solarized-dark", "text", "selected"): "base1 on the shared selection gray",
     ("flow-monokai", "toolDiffRemoved", "boxes"): "original Monokai pink on the state boxes",
     ("flow-kanagawa", "customMessageLabel", "panel"): "oniViolet label",
     ("flow-kanagawa", "toolDiffAdded", "boxes"): "autumnGreen on the state boxes",
@@ -840,6 +891,29 @@ def check_report(name: str, theme: dict) -> tuple[list, list]:
     return known, unexpected
 
 
+def background_problems(name: str, theme: dict) -> list:
+    """Check target L* and state separation, allowing only explicit per-theme lightness overrides."""
+    g = lambda k: resolve(theme, k)
+    overrides = THEMES[name].get("ui_l", {})
+    targets = background_lightness(THEMES[name])
+    problems = []
+    for tok in BG_TOKENS:
+        error = abs(lstar(g(tok)) - targets[tok])
+        if error > 0.25:
+            problems.append(f"{name} {tok} L* drift {error:.2f} > 0.25")
+    for i, a in enumerate(STATE_BG_TOKENS):
+        for b in STATE_BG_TOKENS[i + 1:]:
+            before, after = dE(UI[a], UI[b]), dE(g(a), g(b))
+            if overrides:
+                pair = {a, b}
+                minimum = 30 if pair == {"toolSuccessBg", "toolErrorBg"} else 5 if "userMessageBg" in pair else 15
+                if after < minimum:
+                    problems.append(f"{name} {a}~{b} dE {after:.2f} < {minimum}")
+            elif abs(after - before) > 1.5:
+                problems.append(f"{name} {a}~{b} dE {before:.2f} -> {after:.2f}")
+    return problems
+
+
 def measure(built: dict, hexes: list):
     """Print the metrics cited in README and docs/design.md, or pairwise metrics for the given hex colours."""
     if hexes:
@@ -852,7 +926,7 @@ def measure(built: dict, hexes: list):
             for y in hexes[i + 1:]:
                 print(f"{x} vs {y}  contrast {contrast(x, y):4.2f}:1  dE {dE(x, y):5.1f}  dL* {abs(lstar(x) - lstar(y)):5.1f}")
         return
-    print("== shared UI layer (hex, L*)")
+    print("== shared UI baseline (hex, L*)")
     for tok, h in UI.items():
         print(f"  {tok:18} {h}  L* {lstar(h):5.1f}")
     boxes = [("user", UI["userMessageBg"]), ("pending", UI["toolPendingBg"]),
@@ -861,9 +935,15 @@ def measure(built: dict, hexes: list):
     for i, (na, ha) in enumerate(boxes):
         for nb, hb in boxes[i + 1:]:
             print(f"  {na:8}~ {nb:8} {dE(ha, hb):5.1f}")
-    print("== panel vs terminal backgrounds (dL* = panel L* - background L*)")
+    print("== default panel L* vs terminal backgrounds (except explicit per-theme overrides)")
     for label, bg in TERMINALS:
         print(f"  {bg}  L* {lstar(bg):4.1f}  dL* {lstar(UI['userMessageBg']) - lstar(bg):5.1f}  {label}")
+    print("== per-theme backgrounds (user hex / dE from baseline / state dE pending,done,error)")
+    for name, theme in built.items():
+        g = lambda k: resolve(theme, k)
+        states = [dE(g("userMessageBg"), g(k)) for k in STATE_BG_TOKENS[1:]]
+        print(f"  {name:24} {g('userMessageBg')} dE {dE(g('userMessageBg'), UI['userMessageBg']):4.1f}"
+              f"  state {states[0]:4.1f}/{states[1]:4.1f}/{states[2]:4.1f}")
     print("== canvas ceiling (brightest terminal background on which all canvas foregrounds hold)")
     for name, theme in built.items():
         L, label = canvas_ceiling(name, theme)
@@ -917,6 +997,7 @@ def main():
         problems += [f"duplicate: {a} ~ {b} ({s}/37 identical, mean dE {d:.1f})"
                      for s, d, a, b in dups if s >= DUP_SAME or d < DUP_DE]
         problems += [f"sources: {p}" for p in check_sources(built)]
+        problems += [f"background: {p}" for n, t in built.items() for p in background_problems(n, t)]
         if problems:
             raise SystemExit("--check failed:\n  " + "\n  ".join(problems)
                              + "\n(extend KNOWN / sources only with a verified reason)")
@@ -925,7 +1006,7 @@ def main():
         measure(built, [])
     if args.preview:
         preview(built)
-        preview_ui()
+        preview_ui(built)
 
 
 if __name__ == "__main__":

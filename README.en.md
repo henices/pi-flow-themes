@@ -90,23 +90,24 @@ Conversely, if you switch terminal themes often or flip light/dark, `system` is 
 choice: flow themes are static JSON and can only follow the terminal's appearance through a pair like
 `light/flow-nord`, not re-derive colors from the terminal palette the way system does.
 
-## Design principle: the background carries state, the foreground carries identity
+## Design principle: backgrounds carry state and theme hue, foregrounds carry identity
 
 pi has no global background token: the canvas is the terminal's own background color, and a theme
 only controls what is drawn on top of it. The 56 tokens therefore split into two layers:
 
-- **UI layer (19 tokens, one set of constants shared by all 25 themes)** — the user message box, the
-  three tool status boxes, selection, search, dividers, scrollbar, and the seven thinking-level
-  borders use a single set of dark, low-saturation colors: backgrounds express state, not theme
-  identity. Panels are pinned at L\\* 27.5 and stay distinguishable on mainstream terminal
-  backgrounds up to L\\* 22.
+- **UI layer (19 tokens)** — one shared set of dark, low-saturation baselines. The eight message /
+  tool / selection / search / scrollbar-track backgrounds all receive the same 30% CIE Lab color
+  shift toward each theme's official canvas. On dark canvases the whole background group drops by at
+  most 4 L\\*, preserving relative levels and state-box ΔE rather than forcing identical contrast.
+  Solarized has explicit lower-L* surfaces that restore every foreground to an official color; Nord drops another 3 L*. The
+  other 11 divider, scrollbar-thumb, and thinking-border colors remain shared; the panel baseline is L\\* 27.5.
 - **Foreground layer (37 tokens)** — body / secondary / status line, syntax, markdown, status
   colors, accent, borders use in principle only hex values from the official palettes, with roles
   mapped per the original authors' highlight specs; body text passes 4.5:1 on every theme's own
   canvas.
 
-The full rationale — definitions of the three metrics (contrast ratio / CIE L\\* / ΔE), the UI-layer
-constant tables and measured terminal backgrounds, the brightest background each theme supports, the
+The full rationale — definitions of the three metrics (contrast ratio / CIE L\\* / ΔE), the UI
+baselines, per-theme backgrounds and measured terminal backgrounds, the brightest background each theme supports, the
 known costs of sticking to official colors (`--check` lists them; left unfixed on purpose), and the
 catalogue of intentional role deviations — is in
 **[docs/design.en.md](docs/design.en.md)** (中文：[design.md](docs/design.md));
@@ -120,11 +121,11 @@ one file:
 ```bash
 python3 build_themes.py            # regenerate themes/ from the THEMES table
 python3 build_themes.py --check    # enforce contrast via FLOOR (non-allowlisted low-contrast items fail)
-                                   # + per-theme canvas support ceiling + sources/theme-sources.json completeness
+                                   # + canvas ceilings + background L*/state-box ΔE baselines + sources completeness
                                    # + near-duplicate theme report; any failure exits 1
 python3 build_themes.py --preview  # also render the two preview images (needs the playwright CLI + chromium)
-python3 build_themes.py --measure  # print every metric cited in the README: UI-layer L*, pairwise ΔE of the status
-                                   # boxes, panel ΔL* against each terminal background, per-theme contrast tables
+python3 build_themes.py --measure  # print every cited metric: UI baselines and per-theme backgrounds, status-box ΔE,
+                                   # panel ΔL* against terminal backgrounds, per-theme contrast tables
 python3 build_themes.py --measure '#2E4931' '#414141'   # any hex values: L*a*b* for each, pairwise contrast / ΔE / ΔL*
 ```
 

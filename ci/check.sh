@@ -6,7 +6,7 @@
 #   1. determinism        two consecutive builds must be byte-identical
 #   2. themes/ in sync    committed JSON == fresh build (git worktrees only, skipped otherwise)
 #   3. --check            contrast floors + KNOWN allowlist + canvas ceilings + near-duplicates
-#                         + sources/theme-sources.json completeness
+#                         + background L*/state-box dE baselines + sources/theme-sources.json completeness
 #   4. pi loader          every theme loaded through pi's real validator + loader
 #
 # Requirements: python3 (stdlib only); node >= 22.19 + npm for step 4 (network needed when the

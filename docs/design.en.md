@@ -1,4 +1,4 @@
-# Design principle: the background carries state, the foreground carries identity
+# Design principle: backgrounds carry state and theme hue, foregrounds carry identity
 
 > 中文：[design.md](design.md) · Back to [README.en.md](../README.en.md)
 
@@ -24,12 +24,29 @@ editor roles, while pi has 56 tokens, 19 of which are UI surfaces that don't exi
 user message box, three tool status boxes, selection, search, dividers, scrollbar, and the seven
 thinking-level borders.
 
-## UI layer: one set of constants shared by all 25
+## UI layer: shared lightness and state distances, theme-specific background hues
 
-These 19 tokens are identical across all 25 themes, matching the architecture of pi's built-in dark
-theme — backgrounds express state, not theme identity.
+All 19 tokens start from one shared baseline. The eight actual backgrounds (user/custom messages,
+three tool boxes, selection, search, and scrollbar track) receive **one common** theme color shift:
+30% of the official canvas color's CIE Lab a\\*/b\\*. To avoid overly bright panels on dark
+canvases, when the user panel is more than 8 L\\* above the official canvas, the whole background
+group drops by at most 4 L\\* rather than forcing identical contrast across themes. Applying one
+vector to the whole group preserves relative lightness levels and pairwise ΔE. After quantisation
+to 8-bit sRGB, `--check` requires actual versus computed-target L\\* drift ≤ 0.25 and pairwise
+state-box ΔE drift ≤ 1.5. The other 11 divider, scrollbar-thumb, and thinking-border colors remain shared.
 
-| Element | Value | CIE L\\* |
+Solarized restores **all 37 foreground tokens to official values** through explicit lightness targets: its
+user/custom panels and scrollbar track use L\\* 19.5, its three tool boxes use 18, and selection /
+search use 22.5 / 25.5. Official base1 then measures 4.97:1 on user panels and 4.55:1 on selection,
+violet labels 3.04:1, tool titles 5.20:1, and red diff deletions 3.01:1. `--check` validates these
+explicit L\\* targets and absolute state-box ΔE floors instead of the shared lightness baseline.
+The tradeoff is a smaller panel-to-canvas ΔL\\* and weaker panel boundaries on brighter terminal
+backgrounds; official-foreground legibility takes priority here.
+Nord separately lowers the whole background group by 3 L\\* (user panels 24.5, tool boxes 24.2/25.3,
+selection/search 27/30) without changing foreground mappings. Explicit-override themes are checked
+against their target L\\* and absolute state-box ΔE floors.
+
+| Element | Shared baseline (the first four rows vary by theme) | CIE L\\* |
 |---|---|---|
 | User message box, custom message box | `#414141` | 27.5 |
 | Tool running | `#3E4049` (slightly cool gray; ΔE 6 from the user box — noticeable, not attention-grabbing) | 27.2 |
@@ -53,13 +70,14 @@ in each terminal's source):
 | WezTerm default, GNOME Tango dark | `#333333` / `#2E3436` | 21 |
 | The 25 schemes' own canvases in this set | Rosé Pine `#191724` … Catppuccin Frappé `#303446` | 8.5–22.0 |
 
-Dark terminal backgrounds almost all fall in L\\* 0–22. Panels are pinned at 27.5: on the brightest
+Dark terminal backgrounds almost all fall in L\\* 0–22. The panel baseline is 27.5, with the small dark-canvas
+adjustment above: on the brightest
 canvas in the set (Catppuccin Frappé `#303446`, L\\* 22.0) they are still 5.5 L\\* brighter than the
 background — just past the "you can tell it's a panel" line — and 27.5 brighter on pure black (the
 same magnitude as pi's built-in dark on a black background). Terminals with backgrounds brighter
 than L\\* 22 are outside the design envelope.
-The image below shows this layer as actually rendered on each background (generated with
-`--preview`):
+The image below shows every theme's actual UI backgrounds on its own official canvas (generated
+with `--preview`):
 
 ![ui-layer](../preview/ui-layer.png)
 
@@ -87,30 +105,27 @@ comments — while body text is unaffected.
 The remaining 37 tokens (body / secondary / status line, syntax, markdown, status colors, accent,
 borders) in principle use only hex values from the official palettes, with roles mapped per the
 original authors' highlight definitions; the sources are documented in the comment block above each
-theme in `build_themes.py`. There are two custom foregrounds, both in-between colors for a gap
-between adjacent official steps: Solarized's tool title `#B3BAB3` (official base1 reaches only
-3.72:1 on the shared success box while the next step up, base2, jumps to 8.11:1; the mix lands at
-5.01:1) and Nord's tool output `#ACC0D5` (nord9 is 3.69:1, too close to the box; nord4/nord5/nord6
-are the 7.4-8.6:1 body whites, with nord5 only dE 2.4 from nord6; 60% nord9 + 40% nord6 gives 5.32:1).
+theme in `build_themes.py`. Solarized's background exception restores every foreground to an official
+value, leaving only one custom foreground in the collection: Nord's tool output `#ACC0D5`, a nord9/nord6
+mix (nord9 is 3.69:1, too close to the box; nord4/nord5/nord6 are the 7.4-8.6:1 body whites;
+60% nord9 + 40% nord6 gives 5.32:1).
 
 Known costs of sticking to official colors (`--check` lists these; left unfixed on purpose):
 
 - Comments and the status line sit at 2.2–3.0:1 in One Dark / Nord / Tokyo Night / Solarized /
   Miramare / Oceanic Next / Material, below the 3:1 legibility line — the original authors made
   comments dark by design; that is what these schemes look like.
-- Some official reds run dark against the deep tool-box backgrounds: the diff deletion colors of
-  Nord / Solarized / Monokai / Gruvbox / Andromeda / Noctis measure 2.1–3.0:1, Solarized's violet
-  tags 2.3:1, Kanagawa's oniViolet tags and autumnGreen 2.9:1 — all slightly below 3:1.
-- Body text passes the 4.5:1 legibility line on every canvas, but two schemes miss the 7:1
-  high-contrast bar: One Dark at 6.6:1 and Solarized (base1) at 5.6:1. There are exceptions on the
-  shared panel / selection backgrounds: Solarized's base1 is 3.8:1 on the user message box and 3.5:1
-  on selection, and One Dark's body text is 4.4:1 on selection — these gray panels are brighter than
-  the canvas, and the official body colors have no brighter step to swap in.
-- Dracula's tool title uses official pink, 4.16:1 on the shared success box, slightly below the
+- Some official colors run dark against the deep tool-box backgrounds: the diff deletion colors of
+  Nord / Monokai / Gruvbox / Andromeda / Noctis measure 2.1–3.0:1, and Kanagawa's oniViolet tags and
+  autumnGreen measure 2.9:1 — all slightly below 3:1.
+- Body text passes the 4.5:1 legibility line on every canvas, but One Dark and Solarized miss the 7:1
+  high-contrast bar at 6.6:1 / 5.6:1. One Dark's body text reaches only 4.4:1 on the theme-tinted
+  selection background — it is brighter than the canvas, and the official body color has no brighter step.
+- Dracula's tool title uses official pink, 4.14:1 on the theme-tinted success box, slightly below the
   4.5:1 body-text line; the bold command text is still crisp.
 - Text hierarchy: Dracula officially has just one gray (comment), so muted equals dim and the three
-  text levels collapse to two; One Dark's and Solarized's body vs. secondary text differ by only
-  about ΔL\\* 5 (their official fg vs. statusFg and base1 vs. base0 are close to begin with).
+  text levels collapse to two; One Dark's and Solarized's body vs. secondary text differ by only about
+  ΔL\\* 5 (official fg vs. statusFg and base1 vs. base0 are close to begin with).
 - Synthwave '84's body text is the official `colors.foreground` pure white `#FFFFFF` (upstream has
   no editor.foreground), the brightest body text in the set.
 
@@ -123,8 +138,9 @@ from upstream; re-verified hex-by-hex against upstream on 2026-09-19):
   `#ACC0D5` (60% nord9 + 40% nord6: nord9 reaches only 3.7:1 on the shared tool boxes and shares the
   pending box's blue-grey hue; the next official steps, nord4/nord5/nord6, are the 7.4-8.6:1 body
   whites, and nord5 sits dE 2.4 from nord6; the mix measures 5.3:1;
-  diff context lines stay nord4 gray); Solarized body text uses base1 (base0 is too dark in
-  terminals) and the tool title uses the in-between color described above; Kanagawa diff deletion
+  diff context lines stay nord4 gray); Solarized body, user/custom message, and tool title text use base1,
+  tool output and diff context use base0, labels use violet, and diff deletion uses red, all supported by
+  the lower-L* backgrounds above rather than custom foregrounds; Kanagawa diff deletion
   uses waveRed (autumnRed is only 2.1:1 inside the box) and borders use ui.special's springViolet1
   (upstream's divider is a background color); One Dark's on-panel text uses its bright foreground
   `#D7DAE0`; Miramare's secondary text, blockquotes, and borders use orange (the official Grey

@@ -164,7 +164,7 @@
           "notes": "MIT text embedded in the vim file header; no LICENSE file"
         }
       ],
-      "notes": "green = #859900 (spec value; the vim file's active 'experimental' green is #719e07); toolTitle #B3BAB3 is the approved custom foreground"
+      "notes": "green = #859900 (spec value; the vim file's active 'experimental' green is #719e07); all 37 foreground tokens use official palette hexes; explicit lower-L* UI backgrounds preserve their legibility"
     },
     {
       "name": "flow-monokai",

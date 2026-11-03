@@ -83,17 +83,18 @@ flow 用同样的底线（正文 4.5:1、其余 3:1），但达标手段相反�
 跟随终端明暗只能靠 `light/flow-nord` 这类配对语法在两套固定主题间切换，不能像 system 那样
 从终端调色板现算颜色。
 
-## 设计原则：背景承载状态，前景承载个性
+## 设计原则：背景承载状态与主题色相，前景承载个性
 
 pi 没有全局背景 token，画布就是终端自己的背景色，主题只能决定画在其上的东西。本集把 56 个 token 分成两层：
 
-- **UI 层（19 个 token，25 套共用一组常量）**——用户消息盒、三种工具状态盒、选中、搜索、分隔线、
-  滚动条、thinking 七档边框，只用一组低饱和深色：背景只表达状态、不表达主题身份。面板钉在 L\* 27.5，
-  在 L\* 0–22 的主流终端默认底色上都能分辨。
+- **UI 层（19 个 token）**——以同一组低饱和深色为基准。其中 8 个消息盒 / 工具盒 / 选中 / 搜索 /
+  滚动轨道背景，统一叠加各主题官方画布色的 30% CIE Lab 色偏移；深色画布主题的整组背景最多
+  降低 4 个 L\*，保留相对层级与状态盒 ΔE。Solarized 为恢复官方前景使用独立低亮度背景，Nord 额外下调 3 个 L\*。
+  其余 11 个分隔线、滚动块和 thinking 边框色继续共用。面板基准为 L\* 27.5，不追求各主题对比度完全一致。
 - **前景层（37 个 token）**——正文 / 次要 / 状态行、语法、markdown、状态色、accent、边框，原则上
   只取各官方调色板的色值，角色按原作者的高亮规范映射；正文在各自画布上全部 ≥ 4.5:1。
 
-三种度量（对比度 / CIE L\* / ΔE）的定义、UI 层常量表与各终端底色实测、每套主题可用的最亮底色、
+三种度量（对比度 / CIE L\* / ΔE）的定义、UI 基准常量表、逐主题背景与各终端底色实测、每套主题可用的最亮底色、
 坚持官方色的已知代价（`--check` 会列出，有意不修）与有意的角色偏离清单，见
 **[docs/design.md](docs/design.md)**（English: [design.en.md](docs/design.en.md)）；
 所有数字都能用 `python3 build_themes.py --measure` 重新算出。
@@ -105,9 +106,9 @@ pi 没有全局背景 token，画布就是终端自己的背景色，主题只�
 ```bash
 python3 build_themes.py            # 由 THEMES 表重新生成 themes/
 python3 build_themes.py --check    # 对比度按 FLOOR 把关（非白名单的低对比项失败）+ 每套的画布支持上限
-                                   #   + sources/theme-sources.json 完整性 + 近重复主题报告；任一不过 exit 1
+                                   #   + 背景 L*/状态盒 ΔE 基准 + sources 完整性 + 近重复报告；任一不过 exit 1
 python3 build_themes.py --preview  # 附带两张效果图（需 playwright CLI + chromium）
-python3 build_themes.py --measure  # 输出 README 引用的全部度量：UI 层 L*、状态盒两两 ΔE、面板对各终端底色的 ΔL*、逐主题对比度表
+python3 build_themes.py --measure  # 输出 README 引用的全部度量：UI 基准与逐主题背景、状态盒 ΔE、面板 ΔL*、逐主题对比度表
 python3 build_themes.py --measure '#2E4931' '#414141'   # 任意几个色值：各自 L*a*b*，两两对比度 / ΔE / ΔL*
 ```
 
