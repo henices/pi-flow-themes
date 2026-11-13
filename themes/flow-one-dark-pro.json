@@ -75,7 +75,7 @@
 		"toolDiffAdded": "green",
 		"toolDiffRemoved": "red",
 		"toolDiffContext": "statusFg",
-		"syntaxComment": "comment",
+		"syntaxComment": "statusFg",
 		"syntaxKeyword": "purple",
 		"syntaxFunction": "blue",
 		"syntaxVariable": "red",

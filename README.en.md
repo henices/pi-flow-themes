@@ -14,7 +14,7 @@ mapping table, and all 25 were validated with the schema validator bundled in pi
 | Theme | Source |
 |---|---|
 | `flow-one-dark-pro` | Binaryify/OneDark-Pro tokenColors, joshdick/onedark.vim |
-| `flow-nord` | nordtheme.com docs, nordtheme/vim (comments use the official brightened nord3, `#616E88`) |
+| `flow-nord` | nordtheme.com docs, nordtheme/vim (comments use official nord9, `#81A1C1`) |
 | `flow-dracula` | spec.draculatheme.com, dracula/vim |
 | `flow-gruvbox` | morhetz/gruvbox (dark medium) |
 | `flow-catppuccin-mocha` | catppuccin style-guide, catppuccin/nvim |
@@ -75,8 +75,10 @@ palette at startup: hue comes from the terminal, lightness is solved from contra
 It guarantees readability on any terminal, at the cost of no longer looking like any known palette —
 Gruvbox's dark red is lightened, Catppuccin Latte's red darkened.
 
-flow applies the same floors (text 4.5:1, everything else 3:1) with the opposite means: **keep the
-official colors and record every sub-floor exception** (the `--check` whitelist). Reasons to pick flow:
+flow applies the same floors (text 4.5:1, everything else 3:1) while preserving each palette's identity:
+it first tries a brighter official step, then mixes two official colors from the same theme when no
+suitable step exists. **Every checked readable foreground passes on its actual background; `--check` has no whitelist.**
+Reasons to pick flow:
 
 - **Palette identity**: Gruvbox looks like official Gruvbox on any terminal; each of the 25 sets keeps
   its own identity instead of drifting with the terminal's palette.
@@ -102,14 +104,15 @@ only controls what is drawn on top of it. The 56 tokens therefore split into two
   Solarized has explicit lower-L* surfaces that restore every foreground to an official color; Nord drops another 3 L*. The
   other 11 divider, scrollbar-thumb, and thinking-border colors remain shared; the panel baseline is L\\* 27.5.
 - **Foreground layer (37 tokens)** — body / secondary / status line, syntax, markdown, status
-  colors, accent, borders use in principle only hex values from the official palettes, with roles
-  mapped per the original authors' highlight specs; body text passes 4.5:1 on every theme's own
-  canvas.
+  colors, accent, and borders prefer official palette values, with roles mapped per the original
+  authors' highlight specs. A few low-contrast colors use mixes of official colors from the same theme.
+  Body text passes 4.5:1 on every theme's own canvas; other checked pairs pass 3:1. Additional
+  Markdown/syntax combinations inside message panels and tool boxes are not yet fully covered;
+  see the design document for the exact coverage boundary.
 
 The full rationale — definitions of the three metrics (contrast ratio / CIE L\\* / ΔE), the UI
 baselines, per-theme backgrounds and measured terminal backgrounds, the brightest background each theme supports, the
-known costs of sticking to official colors (`--check` lists them; left unfixed on purpose), and the
-catalogue of intentional role deviations — is in
+readability fixes, remaining trade-offs, and the catalogue of intentional role deviations — is in
 **[docs/design.en.md](docs/design.en.md)** (中文：[design.md](docs/design.md));
 every number can be recomputed with `python3 build_themes.py --measure`.
 
@@ -120,7 +123,7 @@ one file:
 
 ```bash
 python3 build_themes.py            # regenerate themes/ from the THEMES table
-python3 build_themes.py --check    # enforce contrast via FLOOR (non-allowlisted low-contrast items fail)
+python3 build_themes.py --check    # enforce FLOOR for every checked foreground (no allowlist)
                                    # + canvas ceilings + background L*/state-box ΔE baselines + sources completeness
                                    # + near-duplicate theme report; any failure exits 1
 python3 build_themes.py --preview  # also render the two preview images (needs the playwright CLI + chromium)

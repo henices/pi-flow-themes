@@ -15,7 +15,7 @@ Principle: 背景承载状态与主题色相, 前景承载个性.
 
 Usage:
   python3 build_themes.py            # write themes/flow-*.json
-  python3 build_themes.py --check    # + contrast report (FLOOR + KNOWN allowlist), canvas ceiling per
+  python3 build_themes.py --check    # + contrast report (FLOOR; no exceptions), canvas ceiling per
                                      #   terminal background, background L*/state dE baselines, sources
                                      #   completeness, near-duplicates; exit 1 on any unexpected finding
   python3 build_themes.py --preview  # + preview/handwritten.png (all themes) and
@@ -103,6 +103,8 @@ TOKENS = [  # pi theme-schema order
 THEMES = {
     # Binaryify/OneDark-Pro tokenColors + joshdick/onedark.vim. Panel text uses the palette's
     # bright fg (#D7DAE0): the body fg is a muted gray-blue that washes out on gray panels.
+    # Comments use statusFg: wordBorder clears 3:1 on canvas but falls to 2.89:1 on message panels;
+    # statusFg stays above 4.26:1 on the canvas, message panels, and tool boxes.
     "flow-one-dark-pro": dict(
         bg="#282C34",
         palette={"fg": "#ABB2BF", "fgBright": "#D7DAE0", "statusFg": "#9DA5B4", "wordBorder": "#7F848E",
@@ -113,33 +115,34 @@ THEMES = {
                "userMessageText": "fgBright", "customMessageText": "fgBright", "toolTitle": "fgBright",
                "searchMatchText": "fgBright", "toolOutput": "fg", "customMessageLabel": "purple",
                "mdHeading": "red", "mdLink": "blue", "mdLinkUrl": "cyan", "mdCode": "green", "mdListBullet": "blue",
-               "syntaxComment": "comment", "syntaxKeyword": "purple", "syntaxFunction": "blue",
+               "syntaxComment": "statusFg", "syntaxKeyword": "purple", "syntaxFunction": "blue",
                "syntaxVariable": "red", "syntaxString": "green", "syntaxNumber": "orange", "syntaxType": "yellow",
                "syntaxOperator": "cyan", "syntaxPunctuation": "fg"},
         info="#3A3A2E"),
 
     # nordtheme.com/docs/colors-and-palettes + nordtheme/vim. Official Snow Storm "dark to bright"
     # (semi-light) style: nord4 body (nordtheme/vim Normal fg), nord6 stays elevated (own messages,
-    # search hits, code blocks), nord9 secondary (thinking/quotes), nord3 brightened for dim/comments.
-    # Tool output is the palette mix #ACC0D5 (60% nord9 + 40% nord6, sRGB): the official steps
-    # around it jump 3.7:1 (nord9 — too close to the box and in its own blue-grey hue) -> 7.4:1
-    # (nord4 — the body colour), and the one unused step in between, nord5 (8.2:1), is dE 2.4 from
-    # nord6, i.e. reads as the same bright white. Same precedent as the Solarized tool title.
-    # Measured 5.32:1 on the boxes, 6.69:1 on the canvas, dE 13.9 to nord9 / 13.5 to nord4.
-    # Lower every background by another 3 L* to reduce panel glare; foreground mappings stay unchanged.
+    # search hits, code blocks), nord8 secondary (thinking/quotes), nord9 for dim/comments/URLs.
+    # Tool output is the palette mix #ACC0D5 (60% nord9 + 40% nord6, sRGB): it stays brighter
+    # than nord9 dim/comments without jumping to the nord4/nord5/nord6 body-white range.
+    # Measured 5.92:1 on the boxes, 6.69:1 on the canvas, dE 13.9 to nord9 / 13.5 to nord4.
+    # nord11_read is 80% nord11 + 20% nord6 (sRGB): error/diff red stays on hue but clears 3:1
+    # both on the canvas and inside every state box (the official red is 2.70:1 in boxes).
+    # Lower every background by another 3 L* to reduce panel glare.
     "flow-nord": dict(
         bg="#2E3440",
         palette={"nord3": "#4C566A", "nord3_bright": "#616E88", "nord4": "#D8DEE9", "nord6": "#ECEFF4",
                  "nord7": "#8FBCBB", "nord8": "#88C0D0", "nord9": "#81A1C1", "nord10": "#5E81AC",
-                 "nord11": "#BF616A", "nord13": "#EBCB8B", "nord14": "#A3BE8C", "nord15": "#B48EAD"},
-        roles={"text": "nord4", "muted": "nord9", "dim": "nord3_bright", "accent": "nord8", "border": "nord10",
-               "success": "nord14", "error": "nord11", "warning": "nord13", "toolTitle": "nord4",
-               "toolOutput": "#ACC0D5",
+                 "nord11": "#BF616A", "nord11_read": "#C87D86", "nord13": "#EBCB8B", "nord14": "#A3BE8C",
+                 "nord15": "#B48EAD"},
+        roles={"text": "nord4", "muted": "nord8", "dim": "nord9", "accent": "nord8", "border": "nord10",
+               "success": "nord14", "error": "nord11_read", "warning": "nord13", "toolTitle": "nord4",
+               "toolOutput": "#ACC0D5", "toolDiffRemoved": "nord11_read",
                "userMessageText": "nord6", "customMessageText": "nord6", "searchMatchText": "nord6",
                "mdCodeBlock": "nord6", "toolDiffContext": "nord4",
                "customMessageLabel": "nord15",
-               "mdHeading": "nord8", "mdCode": "nord7", "mdQuoteBorder": "nord10",
-               "syntaxComment": "nord3_bright", "syntaxKeyword": "nord9", "syntaxFunction": "nord8",
+               "mdHeading": "nord8", "mdCode": "nord7", "mdQuoteBorder": "nord10", "mdLinkUrl": "nord9",
+               "syntaxComment": "nord9", "syntaxKeyword": "nord9", "syntaxFunction": "nord8",
                "syntaxVariable": "nord4", "syntaxString": "nord14", "syntaxNumber": "nord15", "syntaxType": "nord7",
                "syntaxOperator": "nord9", "syntaxPunctuation": "nord4"},
         ui_l={"userMessageBg": 24.5, "customMessageBg": 24.5, "selectedBg": 27.0, "searchMatchBg": 30.0,
@@ -147,16 +150,19 @@ THEMES = {
         info="#45443A"),
 
     # spec.draculatheme.com (syntax + markup §2.2) + dracula/vim. Dracula has one gray: comment.
+    # commentRead is 75% comment + 25% fg (sRGB), lifting secondary text/comments from 3.03 to 4.73:1.
+    # Neutral fg tool titles follow Monokai's readable treatment; official pink falls just below 4.5:1.
     "flow-dracula": dict(
         bg="#282A36",
-        palette={"fg": "#F8F8F2", "comment": "#6272A4", "pink": "#FF79C6", "purple": "#BD93F9", "cyan": "#8BE9FD",
-                 "green": "#50FA7B", "orange": "#FFB86C", "red": "#FF5555", "yellow": "#F1FA8C"},
-        roles={"text": "fg", "muted": "comment", "dim": "comment", "accent": "purple", "border": "comment",
+        palette={"fg": "#F8F8F2", "comment": "#6272A4", "commentRead": "#8894B8", "pink": "#FF79C6",
+                 "purple": "#BD93F9", "cyan": "#8BE9FD", "green": "#50FA7B", "orange": "#FFB86C",
+                 "red": "#FF5555", "yellow": "#F1FA8C"},
+        roles={"text": "fg", "muted": "commentRead", "dim": "commentRead", "accent": "purple", "border": "comment",
                "borderAccent": "pink", "success": "green", "error": "red", "warning": "orange",
-               "customMessageLabel": "purple", "toolTitle": "pink", "toolOutput": "fg", "toolDiffContext": "fg",
+               "customMessageLabel": "purple", "toolTitle": "fg", "toolOutput": "fg", "toolDiffContext": "fg",
                "mdHeading": "purple", "mdLink": "pink", "mdLinkUrl": "cyan", "mdCode": "green",
                "mdListBullet": "cyan", "mdQuote": "yellow",
-               "syntaxComment": "comment", "syntaxKeyword": "pink", "syntaxFunction": "green", "syntaxVariable": "fg",
+               "syntaxComment": "commentRead", "syntaxKeyword": "pink", "syntaxFunction": "green", "syntaxVariable": "fg",
                "syntaxString": "yellow", "syntaxNumber": "purple", "syntaxType": "cyan", "syntaxOperator": "pink",
                "syntaxPunctuation": "fg"},
         info="#3D3A2E"),
@@ -204,27 +210,27 @@ THEMES = {
         roles={"text": "fg", "muted": "fg_dark", "dim": "dark5", "accent": "blue", "border": "blue",
                "borderAccent": "cyan", "success": "green", "error": "red1", "warning": "yellow",
                "customMessageLabel": "magenta", "toolDiffRemoved": "red",
-               "mdHeading": "blue", "mdLink": "teal", "mdLinkUrl": "comment", "mdCode": "green",
+               "mdHeading": "blue", "mdLink": "teal", "mdLinkUrl": "fg_dark", "mdCode": "green",
                "mdQuoteBorder": "dark3", "mdListBullet": "blue5",
-               "syntaxComment": "comment", "syntaxKeyword": "purple", "syntaxFunction": "blue", "syntaxVariable": "fg",
+               "syntaxComment": "fg_dark", "syntaxKeyword": "purple", "syntaxFunction": "blue", "syntaxVariable": "fg",
                "syntaxString": "green", "syntaxNumber": "orange", "syntaxType": "blue1", "syntaxOperator": "blue5",
                "syntaxPunctuation": "fg_dark"},
         info="#33342A"),
 
-    # altercation/vim-colors-solarized. Lower-L* panels restore every foreground to official values:
-    # base1 body/panel/title text, base0 tool output/context, violet labels, and red diff deletions.
-    # The default shared-L* panels cannot do this (base1 needs <= 22.5 on selection, violet needs
-    # <= 20 on user panels, and red needs <= 18 on all tool boxes). dim/comments/URLs keep base01.
+    # altercation/vim-colors-solarized. Lower-L* panels keep every foreground at official values.
+    # Use one brighter official step per text level: base2 body/title, base1 secondary/output,
+    # base0 dim/comments/URLs. The old base1/base0/base01 ramp was only 5.61/4.75/2.79:1 on canvas.
+    # Violet labels and red diff deletions still depend on these explicit low-L* backgrounds.
     "flow-solarized-dark": dict(
         bg="#002B36",
         palette={"base01": "#586E75", "base0": "#839496", "base1": "#93A1A1", "base2": "#EEE8D5",
                  "yellow": "#B58900", "orange": "#CB4B16", "red": "#DC322F", "magenta": "#D33682",
                  "violet": "#6C71C4", "blue": "#268BD2", "cyan": "#2AA198", "green": "#859900"},
-        roles={"text": "base1", "muted": "base0", "dim": "base01", "accent": "blue", "border": "blue",
+        roles={"text": "base2", "muted": "base1", "dim": "base0", "accent": "blue", "border": "blue",
                "borderAccent": "cyan", "success": "green", "error": "red", "warning": "yellow",
-               "searchMatchText": "base2", "customMessageLabel": "violet",
+               "searchMatchText": "base2", "customMessageLabel": "violet", "mdLinkUrl": "base0",
                "mdHeading": "orange", "mdLink": "violet", "mdCode": "cyan", "mdListBullet": "blue",
-               "syntaxComment": "base01", "syntaxKeyword": "green", "syntaxFunction": "blue",
+               "syntaxComment": "base0", "syntaxKeyword": "green", "syntaxFunction": "blue",
                "syntaxVariable": "blue", "syntaxString": "cyan", "syntaxNumber": "cyan", "syntaxType": "yellow",
                "syntaxOperator": "green", "syntaxPunctuation": "base0"},
         ui_l={"userMessageBg": 19.5, "customMessageBg": 19.5, "selectedBg": 22.5, "searchMatchBg": 25.5,
@@ -233,7 +239,8 @@ THEMES = {
 
     # microsoft/vscode extensions/theme-monokai tokenColors (original Monokai values). toolTitle =
     # fgSubtle (editorLineNumber.activeForeground, 5.56:1 in boxes): fg #F8F8F2 glares at L* 97 and
-    # the accent green would sit on the green success box.
+    # the accent green would sit on the green success box. Diff deletion uses invalid red: the original
+    # pink is 2.98:1 on the success box, just below the floor; invalid stays above 3:1 on every box.
     "flow-monokai": dict(
         bg="#272822",
         palette={"fg": "#F8F8F2", "fgSubtle": "#C2C2BF", "lineNumber": "#90908A", "comment": "#88846F",
@@ -244,7 +251,7 @@ THEMES = {
                "borderAccent": "cyan", "success": "green", "error": "invalid", "warning": "yellow",
                "toolTitle": "fgSubtle",
                "customMessageLabel": "purple", "toolOutput": "lineNumber", "toolDiffContext": "lineNumber",
-               "toolDiffRemoved": "pink",
+               "toolDiffRemoved": "invalid",
                "mdHeading": "green", "mdLink": "purple", "mdLinkUrl": "yellow", "mdCode": "orange",
                "mdQuote": "focus", "mdQuoteBorder": "focus", "mdListBullet": "green",
                "syntaxComment": "comment", "syntaxKeyword": "pink", "syntaxFunction": "green", "syntaxVariable": "fg",
@@ -401,18 +408,19 @@ THEMES = {
         info="#3A3428"),
 
     # franbach/miramare colors/miramare.vim. mdQuote is Grey upstream (unreadable on terminal canvas),
-    # falls back to @muted=orange; that and the dark comment are the author's low-contrast look.
+    # falls back to @muted=orange. greyRead is 60% lightGrey + 40% fg (sRGB): the palette has no
+    # brighter grey step, while the original dim/comment colour measures only 2.24:1 on canvas.
     "flow-miramare": dict(
         bg="#2A2426",
-        palette={"fg": "#E6D6AC", "grey": "#444444", "lightGrey": "#5B5B5B", "red": "#E68183",
-                 "orange": "#E39B7B", "yellow": "#D9BB80", "green": "#87AF87", "cyan": "#87C095",
+        palette={"fg": "#E6D6AC", "grey": "#444444", "lightGrey": "#5B5B5B", "greyRead": "#938C7B",
+                 "red": "#E68183", "orange": "#E39B7B", "yellow": "#D9BB80", "green": "#87AF87", "cyan": "#87C095",
                  "blue": "#89BEBA", "purple": "#D3A0BC"},
-        roles={"text": "fg", "muted": "orange", "dim": "lightGrey", "accent": "orange", "border": "orange",
+        roles={"text": "fg", "muted": "orange", "dim": "greyRead", "accent": "orange", "border": "orange",
                "success": "green", "error": "red", "warning": "yellow", "toolTitle": "yellow",
                "customMessageLabel": "purple",
                "mdHeading": "red", "mdLink": "purple", "mdLinkUrl": "blue", "mdCode": "green",
                "mdQuoteBorder": "orange", "mdListBullet": "red",
-               "syntaxComment": "lightGrey", "syntaxKeyword": "red", "syntaxFunction": "green",
+               "syntaxComment": "greyRead", "syntaxKeyword": "red", "syntaxFunction": "green",
                "syntaxVariable": "blue", "syntaxString": "green", "syntaxNumber": "purple", "syntaxType": "yellow",
                "syntaxOperator": "orange", "syntaxPunctuation": "fg"},
         info="#3A342A"),
@@ -475,18 +483,19 @@ THEMES = {
                "syntaxType": "support", "syntaxOperator": "misc", "syntaxPunctuation": "text"},
         info="#2C3A2A"),
 
-    # voronianski/oceanic-next-color-scheme Oceanic Next.tmTheme + the official extended palette
-    # (base04 #A7ADBA for muted/border; comment #65737E stays as the author's deliberately dark comment).
+    # voronianski/oceanic-next-color-scheme Oceanic Next.tmTheme + the official extended palette.
+    # muted/border use base04 #A7ADBA. commentRead is an equal sRGB mix of comment and base04,
+    # lifting dim/comments/URLs from 2.99 to 4.50:1 without introducing a foreign hue.
     "flow-oceanic-next": dict(
         bg="#1B2B34",
-        palette={"fg": "#CDD3DE", "fgDim": "#A7ADBA", "comment": "#65737E", "red": "#EC5F67", "orange": "#F99157",
-                 "yellow": "#FAC863", "green": "#99C794", "teal": "#5FB3B3", "blue": "#6699CC",
-                 "purple": "#C594C5", "magenta": "#BB80B3"},
-        roles={"text": "fg", "muted": "fgDim", "dim": "comment", "accent": "blue", "border": "fgDim",
+        palette={"fg": "#CDD3DE", "fgDim": "#A7ADBA", "comment": "#65737E", "commentRead": "#86909C",
+                 "red": "#EC5F67", "orange": "#F99157", "yellow": "#FAC863", "green": "#99C794",
+                 "teal": "#5FB3B3", "blue": "#6699CC", "purple": "#C594C5", "magenta": "#BB80B3"},
+        roles={"text": "fg", "muted": "fgDim", "dim": "commentRead", "accent": "blue", "border": "fgDim",
                "success": "green", "error": "red", "warning": "yellow", "customMessageLabel": "purple",
-               "mdHeading": "green", "mdLink": "blue", "mdCode": "green", "mdListBullet": "red",
-               "toolDiffAdded": "green", "toolDiffRemoved": "red",
-               "syntaxComment": "comment", "syntaxKeyword": "purple", "syntaxFunction": "blue",
+               "mdHeading": "green", "mdLink": "blue", "mdLinkUrl": "commentRead", "mdCode": "green",
+               "mdListBullet": "red", "toolDiffAdded": "green", "toolDiffRemoved": "red",
+               "syntaxComment": "commentRead", "syntaxKeyword": "purple", "syntaxFunction": "blue",
                "syntaxVariable": "fg", "syntaxString": "green", "syntaxNumber": "orange", "syntaxType": "yellow",
                "syntaxOperator": "teal", "syntaxPunctuation": "fg"},
         info="#2F3A33"),
@@ -527,19 +536,20 @@ THEMES = {
 
     # tinted-theming/schemes base16/material.yaml + the Base16 styling spec role table.
     # toolTitle: base0D functions blue is 4.32:1 in boxes; base05 #EEFFFF glares at L* 99 -> base04
-    # (spec "Dark Foreground", 5.91:1). border = base04: base03 (2.4:1) is the author's comment colour,
-    # too dark for a structural frame.
+    # (spec "Dark Foreground", 5.91:1). border = base04: base03 (2.4:1) is too dark for a structural
+    # frame. commentRead is an equal base03/base04 sRGB mix, giving dim/comments a quieter 4.61:1.
     "flow-material": dict(
         bg="#263238",
-        palette={"base03": "#546E7A", "base04": "#B2CCD6", "base05": "#EEFFFF", "base08": "#F07178",
+        palette={"base03": "#546E7A", "base04": "#B2CCD6", "commentRead": "#839DA8", "base05": "#EEFFFF",
+                 "base08": "#F07178",
                  "base09": "#F78C6C", "base0A": "#FFCB6B", "base0B": "#C3E88D", "base0C": "#89DDFF",
                  "base0D": "#82AAFF", "base0E": "#C792EA", "base0F": "#FF5370"},
-        roles={"text": "base05", "muted": "base04", "dim": "base03", "accent": "base0D", "border": "base04",
+        roles={"text": "base05", "muted": "base04", "dim": "commentRead", "accent": "base0D", "border": "base04",
                "success": "base0B", "error": "base08", "warning": "base0A", "toolTitle": "base04",
                "customMessageLabel": "base0E",
                "mdHeading": "base0D", "mdLink": "base08", "mdLinkUrl": "base09", "mdCode": "base0B",
                "mdQuote": "base0C", "mdListBullet": "base08",
-               "syntaxComment": "base03", "syntaxKeyword": "base0E", "syntaxFunction": "base0D",
+               "syntaxComment": "commentRead", "syntaxKeyword": "base0E", "syntaxFunction": "base0D",
                "syntaxVariable": "base08", "syntaxString": "base0B", "syntaxNumber": "base09",
                "syntaxType": "base0A", "syntaxOperator": "base05", "syntaxPunctuation": "base05"},
         info="#2F3A33"),
@@ -692,8 +702,9 @@ CANVAS_TOKENS = ("text", "muted", "dim", "accent", "border", "borderAccent", "su
 
 
 def check(theme: dict) -> list:
-    """Legibility report: (token, background, contrast) for every foreground on the background
-    it actually renders on (canvas / user+custom panel / the three tool boxes / selection / search)."""
+    """Legibility report: (token, background, contrast) for canvas foregrounds and dedicated
+    panel/box/selection/search text. Markdown and syntax tokens are measured on the canvas only;
+    their additional message-panel and tool-box combinations are not covered by this report."""
     g = lambda k: resolve(theme, k)
     bg = theme["export"]["pageBg"]
     boxes = [g("toolPendingBg"), g("toolSuccessBg"), g("toolErrorBg")]
@@ -798,45 +809,12 @@ def lstar(h: str) -> float:
 
 FLOOR = {"text": 4.5, "userMessageText": 4.5, "customMessageText": 4.5, "toolTitle": 4.5}   # everything else 3.0
 
-# Known official-colour residuals, verified and accepted (see docs/design.md "已知代价"). Keyed by
-# (theme, token, background). Anything below FLOOR and NOT listed here fails --check.
-KNOWN: dict[tuple, str] = {
-    ("flow-one-dark-pro", "syntaxComment", "canvas"): "onedark.vim comment is dark by design",
-    ("flow-one-dark-pro", "text", "selected"): "bright fg on the theme-tinted selection background",
-    ("flow-nord", "dim", "canvas"): "official nord3 brightened",
-    ("flow-nord", "mdLinkUrl", "canvas"): "nord3 brightened",
-    ("flow-nord", "syntaxComment", "canvas"): "nord3 brightened",
-    ("flow-nord", "toolDiffRemoved", "boxes"): "nord11 on the state boxes",
-    ("flow-dracula", "toolTitle", "boxes"): "official pink, 4.14:1; bold command text stays clear",
-    ("flow-gruvbox", "toolDiffRemoved", "boxes"): "official red on the state boxes",
-    ("flow-tokyo-night", "mdLinkUrl", "canvas"): "official comment blue-grey",
-    ("flow-tokyo-night", "syntaxComment", "canvas"): "official comment",
-    ("flow-solarized-dark", "dim", "canvas"): "base01 by design",
-    ("flow-solarized-dark", "mdLinkUrl", "canvas"): "base01",
-    ("flow-solarized-dark", "syntaxComment", "canvas"): "base01",
-    ("flow-monokai", "toolDiffRemoved", "boxes"): "original Monokai pink on the state boxes",
-    ("flow-kanagawa", "customMessageLabel", "panel"): "oniViolet label",
-    ("flow-kanagawa", "toolDiffAdded", "boxes"): "autumnGreen on the state boxes",
-    # --- expansion set
-    ("flow-oceanic-next", "dim", "canvas"): "official comment #65737E, dark by design",
-    ("flow-oceanic-next", "mdLinkUrl", "canvas"): "official comment colour",
-    ("flow-oceanic-next", "syntaxComment", "canvas"): "official comment #65737E",
-    ("flow-noctis-bordo", "toolDiffRemoved", "boxes"): "official TAG #E66533 on the state boxes, 2.97:1",
-    ("flow-noctis-sereno", "toolDiffRemoved", "boxes"): "official TAG #E66533 on the state boxes, 2.97:1",
-    ("flow-andromeda", "toolDiffRemoved", "boxes"): "official red #EE5D43 on the state boxes",
-    ("flow-material", "dim", "canvas"): "base03 comments, dark by design",
-    ("flow-material", "syntaxComment", "canvas"): "base03 comments",
-    ("flow-miramare", "dim", "canvas"): "light_grey comment colour, author look",
-    ("flow-miramare", "syntaxComment", "canvas"): "light_grey comment colour",
-}
-
-
 def canvas_ceiling(name: str, theme: dict) -> tuple[float, str]:
-    """Brightest TERMINALS background on which every canvas foreground (KNOWN residuals excepted)
-    still meets FLOOR. pi paints on the terminal's own background, so this is the theme's declared
-    support range; contrast of a light foreground only falls as the background brightens."""
+    """Brightest TERMINALS background on which every canvas foreground still meets FLOOR.
+    pi paints on the terminal's own background, so this is the theme's declared support range;
+    contrast of a light foreground only falls as the background brightens."""
     g = lambda k: resolve(theme, k)
-    toks = [t for t in CANVAS_TOKENS if (name, t, "canvas") not in KNOWN]
+    toks = CANVAS_TOKENS
     best = (lstar(theme["export"]["pageBg"]), "own canvas")     # check() already enforces FLOOR here
     for label, bg in TERMINALS:
         if all(contrast(g(t), bg) >= FLOOR.get(t, 3.0) for t in toks):
@@ -882,13 +860,9 @@ def check_sources(built: dict) -> list:
     return problems
 
 
-def check_report(name: str, theme: dict) -> tuple[list, list]:
-    """Split check() rows into (known violations, unexpected violations) against FLOOR."""
-    known, unexpected = [], []
-    for tok, on, c in check(theme):
-        if c < FLOOR.get(tok, 3.0):
-            (known if (name, tok, on) in KNOWN else unexpected).append((tok, on, c))
-    return known, unexpected
+def check_report(name: str, theme: dict) -> list:
+    """Return every checked foreground/background pair below FLOOR; no low-contrast exceptions."""
+    return [(tok, on, c) for tok, on, c in check(theme) if c < FLOOR.get(tok, 3.0)]
 
 
 def background_problems(name: str, theme: dict) -> list:
@@ -981,9 +955,8 @@ def main():
     for name, theme in built.items():
         (OUT / f"{name}.json").write_text(json.dumps(theme, indent="\t") + "\n", encoding="utf-8")
         if args.check:
-            known, unexpected = check_report(name, theme)
-            parts = [f"{t}/{on} {c:.1f} (known)" for t, on, c in known]
-            parts += [f"{t}/{on} {c:.1f} < {FLOOR.get(t, 3.0)} !!" for t, on, c in unexpected]
+            unexpected = check_report(name, theme)
+            parts = [f"{t}/{on} {c:.1f} < {FLOOR.get(t, 3.0)} !!" for t, on, c in unexpected]
             print(f"{name:24} " + ("ok" if not parts else "; ".join(parts)))
             failures.append((name, unexpected))
     print(f"wrote {len(built)} themes -> {OUT}")
@@ -999,8 +972,7 @@ def main():
         problems += [f"sources: {p}" for p in check_sources(built)]
         problems += [f"background: {p}" for n, t in built.items() for p in background_problems(n, t)]
         if problems:
-            raise SystemExit("--check failed:\n  " + "\n  ".join(problems)
-                             + "\n(extend KNOWN / sources only with a verified reason)")
+            raise SystemExit("--check failed:\n  " + "\n  ".join(problems))
         print("--check ok")
     if args.measure is not None:           # full report (--measure with no hexes)
         measure(built, [])

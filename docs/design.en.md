@@ -35,15 +35,17 @@ vector to the whole group preserves relative lightness levels and pairwise ΔE. 
 to 8-bit sRGB, `--check` requires actual versus computed-target L\\* drift ≤ 0.25 and pairwise
 state-box ΔE drift ≤ 1.5. The other 11 divider, scrollbar-thumb, and thinking-border colors remain shared.
 
-Solarized restores **all 37 foreground tokens to official values** through explicit lightness targets: its
-user/custom panels and scrollbar track use L\\* 19.5, its three tool boxes use 18, and selection /
-search use 22.5 / 25.5. Official base1 then measures 4.97:1 on user panels and 4.55:1 on selection,
-violet labels 3.04:1, tool titles 5.20:1, and red diff deletions 3.01:1. `--check` validates these
-explicit L\\* targets and absolute state-box ΔE floors instead of the shared lightness baseline.
-The tradeoff is a smaller panel-to-canvas ΔL\\* and weaker panel boundaries on brighter terminal
-backgrounds; official-foreground legibility takes priority here.
+Solarized keeps **all 37 foreground tokens at official values** through explicit lightness targets:
+its user/custom panels and scrollbar track use L\\* 19.5, its three tool boxes use 18, and selection /
+search use 22.5 / 25.5. Every text level moves one official step brighter: base2 for body/titles,
+base1 for secondary/tool output, and base0 for status lines/comments/URLs. Body text then measures
+10.85:1 on user panels and 9.93:1 on selection, violet labels 3.04:1, tool titles 11.35:1, tool output
+5.20:1, and red diff deletions 3.01:1. `--check` validates these explicit L\\* targets and absolute
+state-box ΔE floors instead of the shared lightness baseline. The tradeoff is a smaller panel-to-canvas
+ΔL\\* and weaker panel boundaries on brighter terminal backgrounds; official-foreground legibility
+takes priority here.
 Nord separately lowers the whole background group by 3 L\\* (user panels 24.5, tool boxes 24.2/25.3,
-selection/search 27/30) without changing foreground mappings. Explicit-override themes are checked
+selection/search 27/30) while preserving their relative levels. Explicit-override themes are checked
 against their target L\\* and absolute state-box ΔE floors.
 
 | Element | Shared baseline (the first four rows vary by theme) | CIE L\\* |
@@ -89,7 +91,7 @@ no alarm colors such as red or yellow, and identical across themes.
 The foregrounds are official colors, but the canvas is the terminal's own background, so how bright
 a background each theme stays readable on differs from theme to theme. `--check` recomputes every
 canvas foreground against each background in the table above and reports the brightest background on
-which everything still passes 3:1 / 4.5:1 (excluding colors already listed under known costs); on
+which everything still passes 3:1 / 4.5:1; on
 brighter backgrounds, the first casualties are the theme's secondary foregrounds — dim / borders /
 comments — while body text is unaffected.
 
@@ -103,57 +105,56 @@ comments — while body text is unaffected.
 ## Foreground layer: official colors first
 
 The remaining 37 tokens (body / secondary / status line, syntax, markdown, status colors, accent,
-borders) in principle use only hex values from the official palettes, with roles mapped per the
-original authors' highlight definitions; the sources are documented in the comment block above each
-theme in `build_themes.py`. Solarized's background exception restores every foreground to an official
-value, leaving only one custom foreground in the collection: Nord's tool output `#ACC0D5`, a nord9/nord6
-mix (nord9 is 3.69:1, too close to the box; nord4/nord5/nord6 are the 7.4-8.6:1 body whites;
-60% nord9 + 40% nord6 gives 5.32:1).
+borders) prefer hex values from the official palettes, with roles mapped per the original authors'
+highlight definitions; the sources are documented in the comment block above each theme in
+`build_themes.py`. When the official ramp has no suitable brighter step, two official colors from the
+same theme are mixed in sRGB: Nord's tool output and readable red, Dracula's secondary/comments,
+Miramare's status/comments, and Oceanic Next's and Material's status/comments. These mixes preserve
+each palette's identity without importing hues from another theme.
 
-Known costs of sticking to official colors (`--check` lists these; left unfixed on purpose):
+## Readability fixes and remaining trade-offs
 
-- Comments and the status line sit at 2.2–3.0:1 in One Dark / Nord / Tokyo Night / Solarized /
-  Miramare / Oceanic Next / Material, below the 3:1 legibility line — the original authors made
-  comments dark by design; that is what these schemes look like.
-- Some official colors run dark against the deep tool-box backgrounds: the diff deletion colors of
-  Nord / Monokai / Gruvbox / Andromeda / Noctis measure 2.1–3.0:1, and Kanagawa's oniViolet tags and
-  autumnGreen measure 2.9:1 — all slightly below 3:1.
-- Body text passes the 4.5:1 legibility line on every canvas, but One Dark and Solarized miss the 7:1
-  high-contrast bar at 6.6:1 / 5.6:1. One Dark's body text reaches only 4.4:1 on the theme-tinted
-  selection background — it is brighter than the canvas, and the official body color has no brighter step.
-- Dracula's tool title uses official pink, 4.14:1 on the theme-tinted success box, slightly below the
-  4.5:1 body-text line; the bold command text is still crisp.
-- Text hierarchy: Dracula officially has just one gray (comment), so muted equals dim and the three
-  text levels collapse to two; One Dark's and Solarized's body vs. secondary text differ by only about
-  ΔL\\* 5 (official fg vs. statusFg and base1 vs. base0 are close to begin with).
+Earlier versions accepted low-contrast residuals through a `KNOWN` allowlist. User feedback prompted
+fixes for every exception, and the allowlist has been removed. `--check` now strictly enforces body
+text ≥ 4.5:1 and every other readable element ≥ 3:1 for every checked readable foreground/background
+pair in all 25 themes.
+
+- Coverage: Markdown and syntax tokens are currently measured only on the canvas; their combinations
+  inside message panels and tool boxes are not yet fully checked. "Passes" therefore refers to the
+  reported pairs, not every possible rendering combination. The changed One Dark / Tokyo Night comments
+  and URLs were separately verified above 3:1 on those extra surfaces; complete panel coverage for the
+  other themes remains follow-up work.
+- One Dark body text measures 6.6:1 on canvas, below the 7:1 high-contrast bar, and 4.64:1 on its
+  theme-tinted selection background, still above the body-text floor.
+- The 3:1 floor for non-body elements does not mean all text reaches 4.5:1: some official Solarized
+  status colors, Monokai quotes and tool output, and similar secondary elements remain in the 3–4.5:1
+  range to preserve the original hierarchy.
+- Text hierarchy: Dracula officially has just one gray (comment), so muted still equals dim after the
+  readability lift and the three text levels collapse to two; One Dark's body vs. secondary text differ
+  by only about ΔL\\* 5 (official fg and statusFg are close to begin with).
 - Synthwave '84's body text is the official `colors.foreground` pure white `#FFFFFF` (upstream has
-  no editor.foreground), the brightest body text in the set.
+  no editor.foreground), among the brightest body text in the set.
 
-Intentional role or value deviations (all still official colors of the theme — only the roles differ
-from upstream; re-verified hex-by-hex against upstream on 2026-09-19):
+Intentional role or value deviations (official colors, or documented mixes of two official colors
+from the same theme; re-verified hex-by-hex against upstream on 2026-09-19):
 
-- **Readability-driven**: Nord body text uses nord4 (the official Snow Storm "dark to bright" style,
-  nordtheme/vim's Normal fg), with nord6 kept for elevated text (own messages, search hits, code
-  blocks) and nord9 for secondary text (thinking/quotes), with tool output on the in-between mix
-  `#ACC0D5` (60% nord9 + 40% nord6: nord9 reaches only 3.7:1 on the shared tool boxes and shares the
-  pending box's blue-grey hue; the next official steps, nord4/nord5/nord6, are the 7.4-8.6:1 body
-  whites, and nord5 sits dE 2.4 from nord6; the mix measures 5.3:1;
-  diff context lines stay nord4 gray); Solarized body, user/custom message, and tool title text use base1,
-  tool output and diff context use base0, labels use violet, and diff deletion uses red, all supported by
-  the lower-L* backgrounds above rather than custom foregrounds; Kanagawa diff deletion
-  uses waveRed (autumnRed is only 2.1:1 inside the box) and borders use ui.special's springViolet1
-  (upstream's divider is a background color); One Dark's on-panel text uses its bright foreground
-  `#D7DAE0`; Miramare's secondary text, blockquotes, and borders use orange (the official Grey
-  `#444444` is unreadable on a terminal canvas and upstream has no secondary text level); Noctis's
-  in-box secondary text uses official TEXT (comment is only 2.3:1 inside the box); Oceanic Next's
-  secondary text uses `#A7ADBA` from the official extended palette; Material's borders and tool
-  title use base04 (base03 is the comment color, too dark; base05 `#EEFFFF` is glaring as a title;
-  base0D is 4.32:1 inside the box); Monokai's tool title uses official
-  `editorLineNumber.activeForeground` `#C2C2BF` (fg `#F8F8F2` is glaring as a title, and the accent
-  green would match the success box); Catppuccin Frappé / Macchiato link URLs use overlay1 (the
-  overlay0 that Mocha uses is 2.9:1 on these two brighter canvases); Tokyo Night diff deletion uses
-  red (upstream's diff foreground git.delete `#914C54` is too dark inside the box); Andromeda tags
-  use blue (pink is 2.84:1 on panels).
+- **Readability-driven**: One Dark on-panel text uses bright foreground `#D7DAE0`, and comments use
+  statusFg (5.65:1 on canvas and at least 4.26:1 in message panels/tool boxes; wordBorder reaches only
+  2.89:1 on message panels); Nord uses nord4 for body, nord6
+  for elevated text, nord8 for secondary text, nord9 for status/comments/URLs, `#ACC0D5` for tool
+  output (60% nord9 + 40% nord6, 5.92:1 in boxes), and `#C87D86` for error/diff deletion
+  (80% nord11 + 20% nord6, at least 4.00:1 on canvas and 3.54:1 in boxes); Dracula uses `#8894B8`
+  for muted/dim/comments (75% comment + 25% fg, 4.73:1) and fg for tool titles; Tokyo Night uses fg_dark
+  for comments/URLs (8.10:1 on canvas and at least 5.38:1 in message panels/tool boxes; dark5 reaches
+  only 2.80:1 on message panels) and red for diff deletion; Solarized uses the base2/base1/base0 ramp above;
+  Monokai uses `editorLineNumber.activeForeground` `#C2C2BF` for tool titles and invalid red for diff
+  deletion (at least 3.13:1 in boxes); Kanagawa uses waveRed for diff deletion and ui.special's
+  springViolet1 for borders; Miramare uses orange for secondary/quotes/borders and `#938C7B` for
+  status/comments (60% lightGrey + 40% fg, 4.55:1); Noctis uses official TEXT for in-box secondary
+  text; Oceanic Next uses `#A7ADBA` for secondary text and `#86909C` for status/comments/URLs
+  (an equal comment/base04 mix, 4.50:1); Material uses base04 for borders/tool titles and `#839DA8`
+  for status/comments (an equal base03/base04 mix, 4.61:1); Catppuccin Frappé / Macchiato use overlay1
+  for link URLs; Andromeda uses blue for labels because pink is too dark on panels.
 - **pi has no matching role, so a nearby official role of the same theme is used**: all three
   Catppuccin themes use lavender for titles and mauve for list bullets (upstream blue / teal);
   Andromeda uses cyan for list bullets (upstream yellow); Synthwave '84 swaps link text / URL

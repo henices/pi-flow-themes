@@ -12,7 +12,7 @@
 | 主题 | 依据 |
 |---|---|
 | `flow-one-dark-pro` | Binaryify/OneDark-Pro tokenColors、joshdick/onedark.vim |
-| `flow-nord` | nordtheme.com 文档、nordtheme/vim（注释用官方的 nord3 brightened `#616E88`） |
+| `flow-nord` | nordtheme.com 文档、nordtheme/vim（注释用官方的 nord9 `#81A1C1`） |
 | `flow-dracula` | spec.draculatheme.com、dracula/vim |
 | `flow-gruvbox` | morhetz/gruvbox（dark medium） |
 | `flow-catppuccin-mocha` | catppuccin style-guide、catppuccin/nvim |
@@ -70,8 +70,9 @@ pi 0.99 起的默认主题 `system` 在启动时向终端查询前景 / 背景�
 它保证在任何终端上可读，代价是不再像任何一套已知配色——Gruvbox 的暗红被抬亮、
 Catppuccin Latte 的红被压暗。
 
-flow 用同样的底线（正文 4.5:1、其余 3:1），但达标手段相反：**保留官方色，把过不了线的例外
-逐条记录、有意不修**（`--check` 白名单）。选 flow 的理由：
+flow 用同样的底线（正文 4.5:1、其余 3:1），但尽量保留官方配色：优先换用同调色板更亮的一档，
+没有合适亮档时混合同主题的两档官方色。**所有受检的可读前景都在实际背景上过线，`--check` 不设白名单**。
+选 flow 的理由：
 
 - **配色身份**：Gruvbox 在任何终端里都是官方 Gruvbox 的样子，25 套各有辨识度，不随终端调色板漂移；
 - **可复核的质量账目**：对比度、每套可用的最亮底色、与上游的每一处偏离都记录在案，
@@ -91,11 +92,13 @@ pi 没有全局背景 token，画布就是终端自己的背景色，主题只�
   滚动轨道背景，统一叠加各主题官方画布色的 30% CIE Lab 色偏移；深色画布主题的整组背景最多
   降低 4 个 L\*，保留相对层级与状态盒 ΔE。Solarized 为恢复官方前景使用独立低亮度背景，Nord 额外下调 3 个 L\*。
   其余 11 个分隔线、滚动块和 thinking 边框色继续共用。面板基准为 L\* 27.5，不追求各主题对比度完全一致。
-- **前景层（37 个 token）**——正文 / 次要 / 状态行、语法、markdown、状态色、accent、边框，原则上
-  只取各官方调色板的色值，角色按原作者的高亮规范映射；正文在各自画布上全部 ≥ 4.5:1。
+- **前景层（37 个 token）**——正文 / 次要 / 状态行、语法、markdown、状态色、accent、边框，优先
+  取各官方调色板的色值，角色按原作者的高亮规范映射；少数低对比色使用同主题的官方色混色。
+  正文在各自画布上全部 ≥ 4.5:1，其余受检组合 ≥ 3:1；Markdown/语法在消息面板与工具盒内的
+  额外组合尚未全量纳入检查，覆盖范围见设计文档。
 
 三种度量（对比度 / CIE L\* / ΔE）的定义、UI 基准常量表、逐主题背景与各终端底色实测、每套主题可用的最亮底色、
-坚持官方色的已知代价（`--check` 会列出，有意不修）与有意的角色偏离清单，见
+可读性修正、剩余取舍与有意的角色偏离清单，见
 **[docs/design.md](docs/design.md)**（English: [design.en.md](docs/design.en.md)）；
 所有数字都能用 `python3 build_themes.py --measure` 重新算出。
 
@@ -105,7 +108,7 @@ pi 没有全局背景 token，画布就是终端自己的背景色，主题只�
 
 ```bash
 python3 build_themes.py            # 由 THEMES 表重新生成 themes/
-python3 build_themes.py --check    # 对比度按 FLOOR 把关（非白名单的低对比项失败）+ 每套的画布支持上限
+python3 build_themes.py --check    # 受检前景按 FLOOR 把关（无白名单）+ 每套的画布支持上限
                                    #   + 背景 L*/状态盒 ΔE 基准 + sources 完整性 + 近重复报告；任一不过 exit 1
 python3 build_themes.py --preview  # 附带两张效果图（需 playwright CLI + chromium）
 python3 build_themes.py --measure  # 输出 README 引用的全部度量：UI 基准与逐主题背景、状态盒 ΔE、面板 ΔL*、逐主题对比度表

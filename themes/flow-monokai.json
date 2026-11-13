@@ -74,7 +74,7 @@
 		"mdHr": "ui_mdHr",
 		"mdListBullet": "green",
 		"toolDiffAdded": "green",
-		"toolDiffRemoved": "pink",
+		"toolDiffRemoved": "invalid",
 		"toolDiffContext": "lineNumber",
 		"syntaxComment": "comment",
 		"syntaxKeyword": "pink",

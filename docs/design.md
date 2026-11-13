@@ -25,13 +25,14 @@ UI 面：用户消息盒、三种工具状态盒、选中、搜索、分隔线�
 sRGB 后，`--check` 要求实际色与计算目标 L\* 的误差 ≤ 0.25、状态盒两两 ΔE 漂移 ≤ 1.5。
 其余 11 个分隔线、滚动块和 thinking 边框色仍全主题共享。
 
-Solarized 为让 **37/37 前景 token 全部恢复官方色值**，用户/自定义面板与滚动轨道改用
-L\* 19.5，三个工具盒用 18，选中/搜索用 22.5/25.5。此时官方 base1 在用户面板为 4.97:1、选中底为
-4.55:1，violet 标签为 3.04:1，工具标题为 5.20:1，红色 diff 为 3.01:1。`--check` 校验这些显式目标 L\*
-及状态盒的绝对 ΔE 下限，不再要求该主题保持共享亮度。代价是面板与画布的 ΔL\* 缩小，
-在较亮终端底色上面板边界较弱；这里优先保证官方前景的可读性。
-Nord 另将整组背景下调 3 个 L\*（用户面板 24.5、工具盒 24.2/25.3、选中/搜索 27/30），仅降低背景亮度，
-前景映射不变。显式覆盖主题均校验目标 L\* 与状态盒的绝对 ΔE 下限。
+Solarized 为让 **37/37 前景 token 全部使用官方色值**，用户/自定义面板与滚动轨道改用
+L\* 19.5，三个工具盒用 18，选中/搜索用 22.5/25.5。文字层级整体提高一档：base2 正文/标题、
+base1 次要文字/工具输出、base0 状态行/注释/URL。此时正文在用户面板为 10.85:1、选中底为
+9.93:1，violet 标签为 3.04:1，工具标题为 11.35:1，工具输出为 5.20:1，红色 diff 为 3.01:1。
+`--check` 校验这些显式目标 L\* 及状态盒的绝对 ΔE 下限，不再要求该主题保持共享亮度。
+代价是面板与画布的 ΔL\* 缩小，在较亮终端底色上面板边界较弱；这里优先保证官方前景的可读性。
+Nord 另将整组背景下调 3 个 L\*（用户面板 24.5、工具盒 24.2/25.3、选中/搜索 27/30），
+保持背景间的相对层级。显式覆盖主题均校验目标 L\* 与状态盒的绝对 ΔE 下限。
 
 | 元素 | 共享基准色（前 4 行实际色随主题） | CIE L\* |
 |---|---|---|
@@ -68,7 +69,7 @@ thinking 等级的边框颜色只表示等级，五档五色、低刺激、不�
 ## 前景层对终端底色的支持范围
 
 前景是官方色，画布却是终端自己的底色，所以每套主题能在多亮的底色上保持可读各不相同。
-`--check` 对上表每种底色重算全部画布前景，报告"最亮还能全过 3:1 / 4.5:1 的底色"（已列入已知代价的注释色除外）；
+`--check` 对上表每种底色重算全部画布前景，报告"最亮还能全过 3:1 / 4.5:1 的底色"；
 底色比这更亮时，最先失守的是该主题的 dim / 边框 / 注释一类次要前景，正文不受影响。
 
 | 可用到的最亮底色 | 主题 |
@@ -80,42 +81,42 @@ thinking 等级的边框颜色只表示等级，五档五色、低刺激、不�
 
 ## 前景层：以官方色为主
 
-其余 37 个 token（正文 / 次要 / 状态行、语法、markdown、状态色、accent、边框）原则上只取官方调色板的色值，
-角色按原作者的高亮定义映射，来源见 `build_themes.py` 每套主题头部的注释。Solarized 通过上述背景例外
-恢复全部官方前景；全集只剩一处自定义前景：Nord 工具输出 `#ACC0D5` 是 nord9/nord6 混色（nord9 3.69:1
-太贴盒底，nord4/nord5/nord6 是 7.4–8.6:1 的正文白；取 60% nord9 + 40% nord6，5.32:1）。
+其余 37 个 token（正文 / 次要 / 状态行、语法、markdown、状态色、accent、边框）优先取官方调色板的色值，
+角色按原作者的高亮定义映射，来源见 `build_themes.py` 每套主题头部的注释。官方色阶没有合适亮档时，
+使用同主题两档官方色的 sRGB 混色：Nord 工具输出与可读红、Dracula 次要文字/注释、Miramare 状态行/注释、
+Oceanic Next 与 Material 的状态行/注释。混色不引入其他主题的色相。
 
-坚持官方色的已知代价（`--check` 会列出，有意不修）：
+## 可读性修正与剩余取舍
 
-- 注释与状态行在 One Dark / Nord / Tokyo Night / Solarized / Miramare / Oceanic Next / Material
-  只有 2.2–3.0:1，低于 3:1 的可读线——原作者本来就把注释做得暗，这是这些配色的样子。
-- 一些官方彩色在工具盒的深色底上偏暗：Nord / Monokai / Gruvbox / Andromeda / Noctis 的 diff
-  删除色 2.1–3.0:1，Kanagawa 的 oniViolet 标签与 autumnGreen 2.9:1，都略低于 3:1。
-- 正文在画布上都过了 4.5:1 的可读线，但 One Dark 与 Solarized 没到 7:1 的高对比（6.6:1 / 5.6:1）；
-  One Dark 正文在主题化选中底上也只有 4.4:1——灰底比画布亮，官方正文色没有更亮的一档可换。
-- Dracula 的工具标题用官方 pink，在主题化成功盒上 4.14:1，略低于 4.5:1 的正文线；粗体命令文字仍清晰。
-- 文字层次：Dracula 官方只有 comment 一个灰，muted 与 dim 同色，三级文字只剩两级；One Dark 与 Solarized 的
-  正文与次要文字只差 ΔL\* 5 左右（官方 fg 与 statusFg / base1 与 base0 本就相近）。
-- Synthwave '84 的正文是官方 `colors.foreground` 纯白 `#FFFFFF`（上游没有 editor.foreground），是全集最亮的正文。
+早期版本把低对比项列入 `KNOWN` 白名单；实际使用反馈后，这些例外已全部修正并删除。
+现在 `--check` 对 25 套主题的每个受检可读前景/背景组合严格执行正文 ≥ 4.5:1、其余可读元素 ≥ 3:1。
 
-有意的角色或色值偏离（都仍是该主题的官方色，只是角色与上游不同；2026-09-19 逐 hex 对照上游复核）：
+- 检查覆盖：Markdown 与语法 token 目前只在画布上测量，它们在消息面板和工具盒内的组合尚未全量纳入；
+  因此“过线”只指报告中列出的组合，不代表所有实际渲染组合。本次调整的 One Dark / Tokyo Night 注释与 URL
+  已另行验证在消息面板和工具盒内也超过 3:1，其他主题的完整面板覆盖仍是后续工作。
+- One Dark 正文在画布上为 6.6:1，没到 7:1 的高对比；在主题化选中底上为 4.64:1，仍过正文线。
+- 非正文的门槛是 3:1，不代表所有文字都达到 4.5:1：Solarized 的部分官方状态色、Monokai 的引用与
+  工具输出等仍在 3–4.5:1 区间，以保留原配色的层次。
+- 文字层次：Dracula 官方只有 comment 一个灰，即使提高亮度后 muted 与 dim 仍同色，三级文字只有两级；
+  One Dark 的正文与次要文字只差 ΔL\* 5 左右（官方 fg 与 statusFg 本就相近）。
+- Synthwave '84 的正文是官方 `colors.foreground` 纯白 `#FFFFFF`（上游没有 editor.foreground），是全集最亮的正文之一。
 
-- **可读性驱动**：Nord 正文用 nord4（官方 Snow Storm "dark to bright" 半亮式，即 nordtheme/vim 的
-  Normal 前景），用户消息/搜索命中/代码块保持 nord6 抢眼档，次要文字（thinking/引用）用 nord9
-  （官方"次级 UI 元素"色），工具输出用两档之间的混色 `#ACC0D5`（60% nord9 + 40% nord6；nord9 在
-  共享工具盒上只有 3.7:1，又与 pending 盒同属蓝灰相，读起来像盒底的一部分；官方下一档 nord4/nord5/nord6
-  是 7.4–8.6:1 的正文白，nord5 与 nord6 只差 dE 2.4；混色取 5.3:1），
-  diff 上下文行保持 nord4 灰；Solarized 正文、用户/自定义消息和工具标题用 base1，工具输出与 diff 上下文用
-  base0，标签用 violet、diff 删除用 red，全部依赖上述低亮度背景而不是自定义前景；Kanagawa diff 删除用
-  waveRed（autumnRed 在盒内只有
-  2.1:1），边框用 ui.special 的 springViolet1（上游分隔线是背景色）；One Dark 面板内文字用其亮前景 `#D7DAE0`；
-  Miramare 的次要文字、引用与边框用 orange（官方 Grey `#444444` 在终端画布上不可读，上游也没有次要文字层）；
-  Noctis 的盒内次要文字用官方 TEXT（comment 在盒内只有 2.3:1）；Oceanic Next 的次要文字用官方扩展调色板的
-  `#A7ADBA`；Material 的边框与工具标题用 base04（base03 是注释色太暗，base05 `#EEFFFF` 作标题刺眼，base0D 在盒内
-  4.32:1）；Monokai 工具标题用官方 `editorLineNumber.activeForeground` `#C2C2BF`（fg `#F8F8F2` 作标题刺眼，
-  accent 绿会和成功盒同色）；Catppuccin Frappé / Macchiato 的链接 URL 用 overlay1（Mocha 用的 overlay0 在这两个
-  较亮画布上 2.9:1）；Tokyo Night diff 删除用 red（上游 diff 前景 git.delete `#914C54` 在盒内太暗）；Andromeda 标签
-  用 blue（pink 在面板上 2.84:1）。
+有意的角色或色值偏离（使用官方色，或同主题两档官方色的可追溯混色；2026-09-19 逐 hex 对照上游复核）：
+
+- **可读性驱动**：One Dark 面板内文字用亮前景 `#D7DAE0`，注释用 statusFg（画布 5.65:1，
+  消息面板/工具盒内最低 4.26:1；wordBorder 在消息面板上只有 2.89:1）；
+  Nord 正文用 nord4，用户消息/搜索命中/代码块用 nord6，次要文字用 nord8，状态行/注释/URL 用 nord9，
+  工具输出用 `#ACC0D5`（60% nord9 + 40% nord6，盒内 5.92:1），错误与 diff 删除用 `#C87D86`
+  （80% nord11 + 20% nord6，画布/盒内最低 4.00/3.54:1）；Dracula 的 muted/dim/comment 用
+  `#8894B8`（75% comment + 25% fg，4.73:1），工具标题用 fg；Tokyo Night 注释/URL 用 fg_dark
+  （画布 8.10:1，消息面板/工具盒内最低 5.38:1；dark5 在消息面板上只有 2.80:1），
+  diff 删除用 red；Solarized 使用上述 base2/base1/base0 文字色阶；Monokai 工具标题用
+  `editorLineNumber.activeForeground` `#C2C2BF`，diff 删除用 invalid 红（盒内最低 3.13:1）；
+  Kanagawa diff 删除用 waveRed，边框用 ui.special 的 springViolet1；Miramare 次要文字/引用/边框用 orange，
+  状态行/注释用 `#938C7B`（60% lightGrey + 40% fg，4.55:1）；Noctis 盒内次要文字用官方 TEXT；
+  Oceanic Next 次要文字用 `#A7ADBA`，状态行/注释/URL 用 `#86909C`（comment 与 base04 等比混色，4.50:1）；
+  Material 边框与工具标题用 base04，状态行/注释用 `#839DA8`（base03/base04 等比混色，4.61:1）；
+  Catppuccin Frappé / Macchiato 的链接 URL 用 overlay1；Andromeda 标签用 blue（pink 在面板上过暗）。
 - **pi 没有对应角色，取同主题的相近官方角色**：Catppuccin 三套标题用 lavender、列表符用 mauve（上游 blue / teal）；
   Andromeda 列表符用 cyan（上游 yellow）；Synthwave '84 链接文字 / URL 与上游对调（green / yellow，让 URL 是较安静的
   一色），warning 用 yellow（上游 editorWarning 就是 success 的绿）；One Dark Pro 运算符用 cyan（上游只有逻辑 /

@@ -5,7 +5,7 @@
 # Steps:
 #   1. determinism        two consecutive builds must be byte-identical
 #   2. themes/ in sync    committed JSON == fresh build (git worktrees only, skipped otherwise)
-#   3. --check            contrast floors + KNOWN allowlist + canvas ceilings + near-duplicates
+#   3. --check            strict contrast floors + canvas ceilings + near-duplicates
 #                         + background L*/state-box dE baselines + sources/theme-sources.json completeness
 #   4. pi loader          every theme loaded through pi's real validator + loader
 #
@@ -42,7 +42,7 @@ else
   echo "skip (not a git worktree)"
 fi
 
-echo "== 3/4 build_themes.py --check (floors / allowlist / sources / duplicates)"
+echo "== 3/4 build_themes.py --check (strict floors / sources / duplicates)"
 "$PY" build_themes.py --check
 
 echo "== 4/4 load all themes through pi ${PI_VERSION}'s own validator + loader"
