@@ -45,7 +45,7 @@
 		"muted": "grey2",
 		"dim": "grey1",
 		"text": "fg",
-		"thinkingText": "grey2",
+		"thinkingText": "fg",
 		"selectedBg": "ui_selectedBg",
 		"scrollbarTrack": "ui_scrollbarTrack",
 		"scrollbarThumb": "ui_scrollbarThumb",

@@ -52,7 +52,7 @@
 		"muted": "description",
 		"dim": "comment",
 		"text": "text",
-		"thinkingText": "description",
+		"thinkingText": "text",
 		"selectedBg": "ui_selectedBg",
 		"scrollbarTrack": "ui_scrollbarTrack",
 		"scrollbarThumb": "ui_scrollbarThumb",

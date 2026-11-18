@@ -80,7 +80,7 @@ MAX_PANEL_DARKEN = 4              # small bounded adjustment; do not chase equal
 DEFAULTS = {
     "userMessageText": "@text", "customMessageText": "@text", "toolTitle": "@text",
     "searchMatchText": "@text", "mdCodeBlock": "@text",
-    "toolOutput": "@muted", "toolDiffContext": "@muted", "mdQuote": "@muted", "thinkingText": "@muted",
+    "toolOutput": "@muted", "toolDiffContext": "@muted", "mdQuote": "@muted", "thinkingText": "@text",
     "mdQuoteBorder": "@dim", "mdLinkUrl": "@dim",
     "toolDiffAdded": "@success", "toolDiffRemoved": "@error", "bashMode": "@warning",
     "borderAccent": "@accent", "mdListBullet": "@accent", "mdLink": "@accent",
@@ -122,7 +122,7 @@ THEMES = {
 
     # nordtheme.com/docs/colors-and-palettes + nordtheme/vim. Official Snow Storm "dark to bright"
     # (semi-light) style: nord4 body (nordtheme/vim Normal fg), nord6 stays elevated (own messages,
-    # search hits, code blocks), nord8 secondary (thinking/quotes), nord9 for dim/comments/URLs.
+    # search hits, code blocks), nord8 secondary text/quotes, nord9 for dim/comments/URLs.
     # Tool output is the palette mix #ACC0D5 (60% nord9 + 40% nord6, sRGB): it stays brighter
     # than nord9 dim/comments without jumping to the nord4/nord5/nord6 body-white range.
     # Measured 5.92:1 on the boxes, 6.69:1 on the canvas, dE 13.9 to nord9 / 13.5 to nord4.

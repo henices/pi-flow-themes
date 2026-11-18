@@ -46,7 +46,7 @@
 		"muted": "fgDim",
 		"dim": "commentRead",
 		"text": "fg",
-		"thinkingText": "fgDim",
+		"thinkingText": "fg",
 		"selectedBg": "ui_selectedBg",
 		"scrollbarTrack": "ui_scrollbarTrack",
 		"scrollbarThumb": "ui_scrollbarThumb",

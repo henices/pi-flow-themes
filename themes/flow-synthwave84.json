@@ -45,7 +45,7 @@
 		"muted": "punct",
 		"dim": "comment",
 		"text": "text",
-		"thinkingText": "punct",
+		"thinkingText": "text",
 		"selectedBg": "ui_selectedBg",
 		"scrollbarTrack": "ui_scrollbarTrack",
 		"scrollbarThumb": "ui_scrollbarThumb",

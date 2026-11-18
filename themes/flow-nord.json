@@ -47,7 +47,7 @@
 		"muted": "nord8",
 		"dim": "nord9",
 		"text": "nord4",
-		"thinkingText": "nord8",
+		"thinkingText": "nord4",
 		"selectedBg": "ui_selectedBg",
 		"scrollbarTrack": "ui_scrollbarTrack",
 		"scrollbarThumb": "ui_scrollbarThumb",

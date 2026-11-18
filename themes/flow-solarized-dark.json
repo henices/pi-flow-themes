@@ -46,7 +46,7 @@
 		"muted": "base1",
 		"dim": "base0",
 		"text": "base2",
-		"thinkingText": "base1",
+		"thinkingText": "base2",
 		"selectedBg": "ui_selectedBg",
 		"scrollbarTrack": "ui_scrollbarTrack",
 		"scrollbarThumb": "ui_scrollbarThumb",

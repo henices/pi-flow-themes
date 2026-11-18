@@ -51,7 +51,7 @@
 		"muted": "subtext0",
 		"dim": "overlay1",
 		"text": "text",
-		"thinkingText": "subtext0",
+		"thinkingText": "text",
 		"selectedBg": "ui_selectedBg",
 		"scrollbarTrack": "ui_scrollbarTrack",
 		"scrollbarThumb": "ui_scrollbarThumb",

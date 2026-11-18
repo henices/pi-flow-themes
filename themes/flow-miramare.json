@@ -45,7 +45,7 @@
 		"muted": "orange",
 		"dim": "greyRead",
 		"text": "fg",
-		"thinkingText": "orange",
+		"thinkingText": "fg",
 		"selectedBg": "ui_selectedBg",
 		"scrollbarTrack": "ui_scrollbarTrack",
 		"scrollbarThumb": "ui_scrollbarThumb",

@@ -53,7 +53,7 @@
 		"muted": "oldWhite",
 		"dim": "fujiGray",
 		"text": "fujiWhite",
-		"thinkingText": "oldWhite",
+		"thinkingText": "fujiWhite",
 		"selectedBg": "ui_selectedBg",
 		"scrollbarTrack": "ui_scrollbarTrack",
 		"scrollbarThumb": "ui_scrollbarThumb",
